@@ -32,9 +32,18 @@ class AppCtrl
 
     @$inject: ['$scope', '$http']
 
-
 class GameCtrl
-    constructor: (@$scope, @$http, Game)->
+    width: 600
+    height: 400
+    fps: 60
+    scoreMax: 10
+    ballsize: 20
+    padHeight: 100
+    padWidth: 10
+    padOffset: 20
+
+    constructor: (@$scope, @$http, Game, Pad, Ball, HitDetector)->
+        $(".popUp").removeClass "shown"
         @$scope.games = []
         @$scope.feedback = []
         @$scope.games = Game.query()
@@ -43,8 +52,76 @@ class GameCtrl
             @$scope.selectedGame = Game.get( {id: @$scope.selectedGameId}, (Game)=>
                 @$scope.score = Game.score
             ) if @$scope.selectedGameId?        
+        
+        @$scope.move = @move
+        @$scope.stop = @stop
 
-    @$inject: ['$scope', '$http', 'Game']
+        @pad1 = new Pad "pad1", @padOffset, (@height - @padHeight) / 2, @padWidth, @padHeight, "w", "s"
+        @pad2 = new Pad "pad2", (@width - @padWidth - @padOffset), (@height - @padHeight) / 2, @padWidth, @padHeight, "up", "down"
+
+        @pads = [@pad1, @pad2]
+
+        @ball = new Ball (@width - @ballsize)/2, (@height - @ballsize)/2, @ballsize
+
+        @hitDetect = new HitDetector(@width, @height)
+
+        @status = "Running"
+        @updateInterval = setInterval @update, 1000 / @fps
+
+    move: (padNumber)->
+        @pads[padNumber].pressKey(@$scope.key)
+
+    stop: (padNumber)->
+        @pads[padNumber].releaseKey(@$scope.key)
+
+    update: =>
+        if @status == "Running"
+            @updateScore()
+            @updateBall()
+            @updatePads()
+            @redraw()
+
+    updateScore: =>
+        if @hitDetect.hitLeftWall(@ball)
+            @score(1)
+        else if @hitDetect.hitRightWall(@ball)
+            @score(0)
+
+    score: (i)=>
+        @$scope.score[i] += 1
+        if @$scope.score[i] >= @scoreMax
+            @status = "Player #{i} Wins"
+            @$scope.message = "Player #{i} Wins"
+            $(".popUp").addClass "shown"
+        @ball = new Ball (@width - @ballsize)/2, (@height - @ballsize)/2, @ballsize
+
+    updateBall: =>
+        if @hitDetect.hit(@ball, @pad1) or @hitDetect.hit(@ball, @pad2)
+            if @hitDetect.hitRight(@ball, @pad1) or @hitDetect.hitLeft(@ball, @pad2)
+                @ball.velocity.x *= -1
+        
+        if @hitDetect.hitVertical(@ball, @pad1) or @hitDetect.hitVertical(@ball, @pad2) or @hitDetect.hitVerticalWall(@ball)
+                @ball.velocity.y *= -1
+
+        @ball.pos.x += @ball.velocity.x
+        @ball.pos.y += @ball.velocity.y
+
+    updatePads: =>
+        for pad in [@pad1, @pad2]
+            if @hitDetect.hitBottomWall(pad)
+                pad.pos.y = @height - pad.size.height
+            else if @hitDetect.hitTopWall(pad)
+                pad.pos.y = 0
+            else
+                pad.pos.y += pad.velocity.y
+
+    redraw: =>
+        for item in [@pad1, @pad2, @ball]
+            $("##{item.id}").css top: item.top()
+            $("##{item.id}").css left: item.left()
+
+
+    @$inject: ['$scope', '$http', 'Game', 'Pad', 'Ball', 'HitDetector']
 
 
 class TodoCtrl

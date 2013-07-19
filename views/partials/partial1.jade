@@ -1,4 +1,4 @@
-p.row-fluid Player 1: W and S.
+p.row-fluid Player 1: W and S
 p.row-fluid Player 2: UP and DOWN
 .row-fluid
     .field
@@ -6,6 +6,7 @@ p.row-fluid Player 2: UP and DOWN
         .scoreBox
             .score#score1 {{score[0]}}
             .score#score2 {{score[1]}}
-        .pad#pad1
-        .pad#pad2
-        .ball
+        .pad#pad1(on-key-down="move(0)", on-key-up="stop(0)", keys="[87, 83]")
+        .pad#pad2(on-key-down="move(1)", on-key-up="stop(1)", keys="[38, 40]")
+        .ball#ball
+.popUp {{ message }}

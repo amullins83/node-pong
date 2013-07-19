@@ -7,10 +7,10 @@
 		'nodePong.filters'
 		'nodePong.services'
 		'nodePong.directives'
+		'gameObjects'
 		'ui'
 		'ui.bootstrap'
 		'mongolab'
-		'ngUpload'
 	]).config [
 			'$routeProvider'
 			'$locationProvider'

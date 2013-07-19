@@ -213,3 +213,19 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+#Sass
+.sass-cache
+
+#grunt
+.grunt
+
+#jasmine
+
+#npm
+node_modules
+node_modules/*
+
+#Mullins stuff
+.bashrc
+.zshrc

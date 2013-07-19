@@ -12,7 +12,36 @@ $padOffsetX: 20px;
 $scoreOffsetX: 50px;
 $scoreOffsetY: 20px;
 
+p.row-fluid {
+  text: {
+    align: center;
+  }
+}
 
+.popUp {
+  text: {
+    align: center;
+  }
+  position: relative;
+  margin: 100px auto;
+  border: {
+    radius: 25%;
+    color: blue;
+    width: 2px;
+  }
+  background: white;
+  font: {
+    family: "Helvetica Neue";
+    size: 72px;
+    color: blue;
+  }
+  width: 50%;
+  display: none;
+}
+
+.popUp.shown {
+  display: block;
+}
 
 .field {
   position: relative;
