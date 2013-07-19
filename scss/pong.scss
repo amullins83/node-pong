@@ -1,0 +1,100 @@
+$gameHeight: 400px;
+$gameWidth: 600px;
+
+$lineWidth: 20px;
+$ballSize:  20px;
+
+$padWidth: 10px;
+$padHeight: 100px;
+
+$padOffsetX: 20px;
+
+$scoreOffsetX: 50px;
+$scoreOffsetY: 20px;
+
+
+
+.field {
+  position: relative;
+  margin: 20px auto;
+  height: $gameHeight;
+  width: $gameWidth;
+  background-color: white;
+  border: {
+    radius: 12px;
+    color: blue;
+    width: 2px;
+    style: solid;
+  }
+}
+
+.middleLine {
+  height: $gameHeight;
+  width: $lineWidth;
+  background-color: blue;
+  position: absolute;
+  left: ($gameWidth - $lineWidth) / 2;
+  top: 0; }
+
+.scoreBox {
+  height: $scoreOffsetY;
+  width: $gameWidth / 2;
+  position: absolute;
+  left: $gameWidth / 4;
+  top: 20px; }
+
+.score {
+  position: absolute;
+  font-size: 72;
+  font-family: monotype;
+  color: blue;
+  top: 0;
+  width: $gameWidth / 4; }
+
+.score#score1 {
+  left: $gameWidth / 4 - $scoreOffsetX; }
+
+.score#score2 {
+  left: $gameWidth / 2 + $scoreOffsetX; }
+
+.pad {
+  position: absolute;
+  height: $padHeight;
+  width: $padWidth;
+  top: ($gameHeight - $padHeight) / 2;
+  background-color: red; }
+
+.pad#pad1 {
+  left: $padOffsetX; }
+
+.pad#pad2 {
+  left: $gameWidth - $padOffsetX - $padWidth; }
+
+.ball {
+  position: absolute;
+  height: $ballSize;
+  width: $ballSize;
+  background-color: green;
+  border-radius: 100%;
+  top: ($gameHeight - $ballSize) / 2;
+  left: ($gameWidth - $ballSize) / 2; }
+
+table {
+  margin: 20px auto;
+  position: relative;
+  width: 800px;
+  text-align: center; }
+
+td {
+  width: 200px;
+  text-align: center;
+  border: 1px blue solid; }
+
+tr {
+  width: 800px;
+  margin: 0 auto;
+  position: relative; }
+
+tr:nth-child(even) {
+  background-color: #ddd;
+}

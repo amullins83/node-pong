@@ -1,0 +1,15 @@
+.row
+	.span12
+		p This is the todo list for Node Pong:
+
+	table
+		thead
+			tr
+				th Date
+				th Todo
+				th Notes
+		tbody
+			tr(ng-repeat="todo in todos")
+				td {{ todo.date }}
+				td {{ todo.name }}
+				td {{ todo.notes }}

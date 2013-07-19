@@ -1,0 +1,80 @@
+.field {
+  position: relative;
+  margin: 20px auto;
+  height: 400px;
+  width: 600px;
+  background-color: white;
+  border-radius: 12px;
+  border-color: blue;
+  border-width: 2px;
+  border-style: solid; }
+
+.middleLine {
+  height: 400px;
+  width: 20px;
+  background-color: blue;
+  position: absolute;
+  left: 290px;
+  top: 0; }
+
+.scoreBox {
+  height: 20px;
+  width: 300px;
+  position: absolute;
+  left: 150px;
+  top: 20px; }
+
+.score {
+  position: absolute;
+  font-size: 72;
+  font-family: monotype;
+  color: blue;
+  top: 0;
+  width: 150px; }
+
+.score#score1 {
+  left: 100px; }
+
+.score#score2 {
+  left: 350px; }
+
+.pad {
+  position: absolute;
+  height: 100px;
+  width: 10px;
+  top: 150px;
+  background-color: red; }
+
+.pad#pad1 {
+  left: 20px; }
+
+.pad#pad2 {
+  left: 570px; }
+
+.ball {
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  background-color: green;
+  border-radius: 100%;
+  top: 190px;
+  left: 290px; }
+
+table {
+  margin: 20px auto;
+  position: relative;
+  width: 800px;
+  text-align: center; }
+
+td {
+  width: 200px;
+  text-align: center;
+  border: 1px blue solid; }
+
+tr {
+  width: 800px;
+  margin: 0 auto;
+  position: relative; }
+
+tr:nth-child(even) {
+  background-color: #ddd; }

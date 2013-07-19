@@ -1,0 +1,32 @@
+extends layout
+
+block body
+  form.navbar.navbar-fixed-top.navbar-form(ng-controller="DialogCtrl")
+    .navbar-inner
+      .container-fluid
+        a.brand(href='#') Node Pong
+        ul.nav
+          li
+            a(href='game') Game
+          li
+            a(href='todo') Todo
+          li
+            button.btn.btn-primary(type="button", ng-click="openSignIn()") Sign In
+  .container-fluid
+    div(ng-controller='AppCtrl')
+      div(ng-view)
+
+  script(src='js/lib/angular/angular.min.js').
+  script(src='js/lib/angular/angular-sanitize.min.js').
+  script(src='js/lib/angular/angular-resource.min.js').
+  script(type="text/javascript", src="js/lib/angular-ui/angular-ui.min.js").
+  script(type="text/javascript", src="js/lib/angular-ui/ui-bootstrap-tpls.min.js").
+   //if lt IE 8
+    script(src='js/lib/angular-ui/angular-ui-ieshiv.min.js').
+  script(src='js/app.js').
+  script(src='js/mongolab.js').
+  script(src='js/services.js').
+  script(src='js/controllers.js').
+  script(src='js/filters.js').
+  script(src='js/directives.js').
+  script(src='js/ng-upload.min.js').
