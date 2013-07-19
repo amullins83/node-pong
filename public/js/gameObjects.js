@@ -74,8 +74,9 @@ Ball = (function(_super) {
     Ball.__super__.constructor.call(this, "ball", xpos, ypos, ballsize, ballsize);
     direction = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
     i = Math.floor(Math.random() * 4);
-    this.velocity.x = direction[i][0];
-    this.velocity.y = direction[i][1];
+    this.speed = 7;
+    this.velocity.x = this.speed * direction[i][0];
+    this.velocity.y = this.speed * direction[i][1];
   }
 
   return Ball;

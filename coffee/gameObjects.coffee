@@ -38,8 +38,9 @@ class Ball extends GameObject
         super "ball", xpos, ypos, ballsize, ballsize
         direction = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
         i = Math.floor Math.random() * 4
-        @velocity.x = direction[i][0]
-        @velocity.y = direction[i][1]
+        @speed = 7
+        @velocity.x = @speed*direction[i][0]
+        @velocity.y = @speed*direction[i][1]
 
 Key =
     "w":87

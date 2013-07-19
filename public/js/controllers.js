@@ -90,6 +90,7 @@ GameCtrl = (function() {
     this.$scope.feedback = [];
     this.$scope.games = Game.query();
     this.$scope.problems = [];
+    this.$scope.score = [0, 0];
     this.$scope.$watch("selectedGameId", function() {
       if (_this.$scope.selectedGameId != null) {
         return _this.$scope.selectedGame = Game.get({

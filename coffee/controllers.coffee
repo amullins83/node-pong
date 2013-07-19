@@ -48,6 +48,7 @@ class GameCtrl
         @$scope.feedback = []
         @$scope.games = Game.query()
         @$scope.problems = []
+        @$scope.score = [0, 0]
         @$scope.$watch "selectedGameId", =>
             @$scope.selectedGame = Game.get( {id: @$scope.selectedGameId}, (Game)=>
                 @$scope.score = Game.score
