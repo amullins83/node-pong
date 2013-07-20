@@ -17,7 +17,7 @@ class Size
 class GameObject
     constructor: (@id, xpos, ypos, width, height)->
         @pos = new Pos(xpos, ypos)
-        @velocity = new Pos()
+        @velocity = new Pos(0, 0)
         @size = new Size(width, height)
 
     left: ->
@@ -45,8 +45,8 @@ class Ball extends GameObject
 Key =
     "w":87
     "s":83
-    "up":38
-    "down":40
+    "up":73
+    "down":75
 
 class Pad extends GameObject
     constructor: (id, xpos, ypos, padWidth, padHeight, upKey, downKey)->
@@ -55,25 +55,25 @@ class Pad extends GameObject
         @down = Key[downKey]
         @speed = 5
 
-    keyResponse: (key, func)->
+    keyResponse: (key, func)=>
         if key is @up
             func "up"
         if key is @down
             func "down"
 
-    pressKey: (key)->
+    pressKey: (key)=>
         @keyResponse key, @startMove
 
-    releaseKey: (key)->
+    releaseKey: (key)=>
         @keyResponse key, @endMove
 
-    startMove: (direction)->
+    startMove: (direction)=>
         if direction == "up"
             @velocity.y = -@speed
         if direction == "down"
             @velocity.y = @speed
 
-    endMove: (direction)->
+    endMove: (direction)=>
         if (direction == "down" and @velocity.y > 0) or (direction == "up" and @velocity.y < 0)
             @velocity.y = 0
 

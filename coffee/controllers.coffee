@@ -48,14 +48,16 @@ class GameCtrl
         @$scope.feedback = []
         @$scope.games = Game.query()
         @$scope.problems = []
+
         @$scope.score = [0, 0]
-        @$scope.$watch "selectedGameId", =>
-            @$scope.selectedGame = Game.get( {id: @$scope.selectedGameId}, (Game)=>
-                @$scope.score = Game.score
-            ) if @$scope.selectedGameId?        
+
+        #@$scope.$watch "selectedGameId", =>
+        #    @$scope.selectedGame = Game.get( {id: @$scope.selectedGameId}, (Game)=>
+        #        @$scope.score = Game.score
+        #    ) if @$scope.selectedGameId?        
         
-        @$scope.move = @move
-        @$scope.stop = @stop
+        #@$scope.move = @move
+        #@$scope.stop = @stop
 
         @pad1 = new Pad "pad1", @padOffset, (@height - @padHeight) / 2, @padWidth, @padHeight, "w", "s"
         @pad2 = new Pad "pad2", (@width - @padWidth - @padOffset), (@height - @padHeight) / 2, @padWidth, @padHeight, "up", "down"
@@ -69,24 +71,34 @@ class GameCtrl
         @status = "Running"
         @updateInterval = setInterval @update, 1000 / @fps
 
-    move: (padNumber)->
-        @pads[padNumber].pressKey(@$scope.key)
+        $(document).on "keyup", (evt)=>
+            @stop evt.which
 
-    stop: (padNumber)->
-        @pads[padNumber].releaseKey(@$scope.key)
+        $(document).on "keydown", (evt)=>
+            @move evt.which
+
+    move: (key)=>
+        console.log "Key pressed: #{key}"
+        for pad in @pads
+            pad.pressKey key
+
+    stop: (key)=>
+        console.log "Key released: #{key}"
+        for pad in @pads
+            pad.releaseKey key
 
     update: =>
         if @status == "Running"
-            @updateScore()
             @updateBall()
             @updatePads()
+            @updateScore()
             @redraw()
 
     updateScore: =>
-        if @hitDetect.hitLeftWall(@ball)
-            @score(1)
-        else if @hitDetect.hitRightWall(@ball)
-            @score(0)
+        if @hitDetect.hitLeftWall @ball
+            @score 1
+        else if @hitDetect.hitRightWall @ball
+            @score 0
 
     score: (i)=>
         @$scope.score[i] += 1
@@ -110,9 +122,9 @@ class GameCtrl
     updatePads: =>
         for pad in [@pad1, @pad2]
             if @hitDetect.hitBottomWall(pad)
-                pad.pos.y = @height - pad.size.height
+                pad.pos.y = @height - pad.size.height - 1
             else if @hitDetect.hitTopWall(pad)
-                pad.pos.y = 0
+                pad.pos.y = 1
             else
                 pad.pos.y += pad.velocity.y
 
@@ -120,7 +132,8 @@ class GameCtrl
         for item in [@pad1, @pad2, @ball]
             $("##{item.id}").css top: item.top()
             $("##{item.id}").css left: item.left()
-
+        for index in [0, 1]
+            $("#score#{index + 1}").text @$scope.score[index]
 
     @$inject: ['$scope', '$http', 'Game', 'Pad', 'Ball', 'HitDetector']
 

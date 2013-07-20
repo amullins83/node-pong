@@ -1,7 +1,7 @@
 $gameHeight: 400px;
 $gameWidth: 600px;
 
-$lineWidth: 20px;
+$lineWidth: 16px;
 $ballSize:  20px;
 
 $padWidth: 10px;
@@ -9,8 +9,9 @@ $padHeight: 100px;
 
 $padOffsetX: 20px;
 
-$scoreOffsetX: 50px;
-$scoreOffsetY: 20px;
+$scoreOffsetX: 0px;
+$scoreOffsetY: 50px;
+$scoreHeight: 200px;
 
 p.row-fluid {
   text: {
@@ -63,41 +64,54 @@ p.row-fluid {
   background-color: blue;
   position: absolute;
   left: ($gameWidth - $lineWidth) / 2;
-  top: 0; }
+  top: 0;
+}
 
 .scoreBox {
-  height: $scoreOffsetY;
+  height: $scoreHeight;
   width: $gameWidth / 2;
   position: absolute;
   left: $gameWidth / 4;
-  top: 20px; }
+  top: $scoreOffsetY;
+}
 
 .score {
   position: absolute;
-  font-size: 72;
-  font-family: monotype;
+  font: {
+    size: 72pt;
+    family: "Helvetica Neue";
+  }
+  text: {
+    align: center;
+  }
   color: blue;
   top: 0;
-  width: $gameWidth / 4; }
+  width: $gameWidth / 4;
+}
 
 .score#score1 {
-  left: $gameWidth / 4 - $scoreOffsetX; }
+  left: 0;
+}
 
 .score#score2 {
-  left: $gameWidth / 2 + $scoreOffsetX; }
+  left: $gameWidth / 4;
+}
 
 .pad {
   position: absolute;
   height: $padHeight;
   width: $padWidth;
   top: ($gameHeight - $padHeight) / 2;
-  background-color: red; }
+  background-color: red;
+}
 
 .pad#pad1 {
-  left: $padOffsetX; }
+  left: $padOffsetX;
+}
 
 .pad#pad2 {
-  left: $gameWidth - $padOffsetX - $padWidth; }
+  left: $gameWidth - $padOffsetX - $padWidth;
+}
 
 .ball {
   position: absolute;
@@ -106,23 +120,27 @@ p.row-fluid {
   background-color: green;
   border-radius: 100%;
   top: ($gameHeight - $ballSize) / 2;
-  left: ($gameWidth - $ballSize) / 2; }
+  left: ($gameWidth - $ballSize) / 2;
+}
 
 table {
   margin: 20px auto;
   position: relative;
   width: 800px;
-  text-align: center; }
+  text-align: center;
+}
 
 td {
   width: 200px;
   text-align: center;
-  border: 1px blue solid; }
+  border: 1px blue solid;
+}
 
 tr {
   width: 800px;
   margin: 0 auto;
-  position: relative; }
+  position: relative;
+}
 
 tr:nth-child(even) {
   background-color: #ddd;

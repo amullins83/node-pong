@@ -229,3 +229,5 @@ node_modules/*
 #Mullins stuff
 .bashrc
 .zshrc
+other*.js
+other*.coffee
