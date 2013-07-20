@@ -18,10 +18,47 @@ module.exports = function(grunt) {
                 files: ["<%= jasmine.src %>", "<%= jasmine.options.specs %>"],
                 tasks: ["jasmine"]
             }
+        },
+        concat: {
+            options: {
+                separator: ";"
+            },
+            js: {
+                src: [
+                        './public/js/lib/angular/angular.min.js',
+                        './public/js/lib/angular/angular-resource.min.js',
+                        './public/js/lib/angular/angular-sanitize.min.js',
+                        './public/js/lib/angular-ui/angular-ui.min.js',
+                        './public/js/lib/angular-ui/ui-bootstrap-tpls.min.js',
+                        './public/js/lib/angular-ui/angular-ui-ieshiv.min.js',
+                        './public/bootstrap/js/bootstrap.min.js',
+                        './public/js/app.js',
+                        './public/js/controllers.js',
+                        './public/js/copyTableToDatabase.js',
+                        './public/js/directives.js',
+                        './public/js/filters.js',
+                        './public/js/gameObjects.js',
+                        './public/js/getInputFieldValues.js',
+                        './public/js/mongolab.js',
+                        './public/js/services.js'
+                ],
+                dest: './dist/js/application.js'
+            },
+            css: {
+                src: [
+                        './public/css/angular-ui.min.css',
+                        './public/css/app.css',
+                        './public/css/pong.css',
+                        './public/bootstrap/css/bootstrap-responsive.min.css',
+                        './public/bootstrap/css/bootstrap.min.css'
+                ],
+                dest: './dist/css/application.css'
+            }
         }
     });
 
     grunt.loadNpmTasks("grunt-contrib-jasmine");
+    grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-watch");
     grunt.loadNpmTasks("grunt-contrib-connect");
 

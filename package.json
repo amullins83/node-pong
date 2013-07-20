@@ -14,25 +14,24 @@
     "angular": ">= 0.0.4",
     "coffee-script": ">= 1.6.2",
     "login-utils": "*",
-    "knox":"*"
+    "knox": "*"
   },
   "devDependencies": {
     "grunt": "*",
     "jasmine-node": ">= 0.0.1",
     "grunt-contrib-jasmine": "*",
     "grunt-contrib-uglify": "*",
-    "grunt-contrib-concat": "*",
+    "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-connect": "~0.3.0",
     "grunt-contrib-watch": "*",
     "grunt-template-jasmine-requirejs": "~0.1.1",
     "http-json-request": "*"
   },
-  "repository" :
-  { "type" : "git"
-   , "url" : "http://github.com/amullins83/node-pong.git"
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/amullins83/node-pong.git"
   },
-  "scripts":
-  { 
+  "scripts": {
     "test": "grunt jasmine"
   }
 }
