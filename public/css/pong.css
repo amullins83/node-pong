@@ -31,32 +31,33 @@ p.row-fluid {
 
 .middleLine {
   height: 400px;
-  width: 20px;
+  width: 16px;
   background-color: blue;
   position: absolute;
-  left: 290px;
+  left: 292px;
   top: 0; }
 
 .scoreBox {
-  height: 20px;
-  width: 300px;
+  height: 200px;
+  width: 450px;
   position: absolute;
-  left: 150px;
-  top: 20px; }
+  left: 75px;
+  top: 50px; }
 
 .score {
   position: absolute;
-  font-size: 72;
-  font-family: monotype;
+  font-size: 72pt;
+  font-family: "Helvetica Neue";
+  text-align: center;
   color: blue;
   top: 0;
-  width: 150px; }
+  width: 225px; }
 
 .score#score1 {
-  left: 100px; }
+  left: 0; }
 
 .score#score2 {
-  left: 350px; }
+  left: 225px; }
 
 .pad {
   position: absolute;

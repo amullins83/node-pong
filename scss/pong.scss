@@ -11,7 +11,8 @@ $padOffsetX: 20px;
 
 $scoreOffsetX: 0px;
 $scoreOffsetY: 50px;
-$scoreHeight: 200px;
+$scoreHeight: $gameHeight / 2;
+$scoreWidth: $gameWidth * 3 / 4;
 
 p.row-fluid {
   text: {
@@ -69,9 +70,9 @@ p.row-fluid {
 
 .scoreBox {
   height: $scoreHeight;
-  width: $gameWidth / 2;
+  width: $scoreWidth;
   position: absolute;
-  left: $gameWidth / 4;
+  left: ($gameWidth - $scoreWidth) / 2;
   top: $scoreOffsetY;
 }
 
@@ -86,7 +87,7 @@ p.row-fluid {
   }
   color: blue;
   top: 0;
-  width: $gameWidth / 4;
+  width: $scoreWidth / 2;
 }
 
 .score#score1 {
@@ -94,7 +95,7 @@ p.row-fluid {
 }
 
 .score#score2 {
-  left: $gameWidth / 4;
+  left: $scoreWidth / 2;
 }
 
 .pad {
