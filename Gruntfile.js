@@ -17,6 +17,14 @@ module.exports = function(grunt) {
             tests: {
                 files: ["<%= jasmine.src %>", "<%= jasmine.options.specs %>"],
                 tasks: ["jasmine"]
+            },
+            distjs: {
+                files: ['public/js/**/*.js'],
+                tasks: ["concat:js", "aws_s3:js"]
+            },
+            distcss: {
+                files: ['public/css/**/*.css'],
+                tasks: ["concat:css", "aws_s3:css"]
             }
         },
         concat: {
@@ -54,6 +62,25 @@ module.exports = function(grunt) {
                 ],
                 dest: './dist/css/application.css'
             }
+        },
+        aws_s3: {
+            options: {
+                accessKeyId: process.env.S3_KEY,
+                secretAccessKey: process.env.S3_SECRET,
+                bucket: "node-pong",
+                region: "us-east-1",
+                concurrency: 2
+            },
+            css: {
+                files: [
+                    {expand: true, cwd: "dist/css", src: ["application.css"], dest: "assets/css"}
+                ]
+            },
+            js: {
+                files: [
+                    {expand: true, cwd: "dist/js", src: ["application.js"], dest: "assets/js"}
+                ]
+            }
         }
     });
 
@@ -61,7 +88,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-watch");
     grunt.loadNpmTasks("grunt-contrib-connect");
-
+    grunt.loadNpmTasks("grunt-aws-s3");
 
     grunt.registerTask("default", ["watch"]);
 
