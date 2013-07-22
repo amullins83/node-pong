@@ -103,8 +103,9 @@ class GameCtrl
     score: (i)=>
         @$scope.score[i] += 1
         if @$scope.score[i] >= @scoreMax
-            @status = "Player #{i} Wins"
-            @$scope.message = "Player #{i} Wins"
+            @status = "Player #{i+1} Wins"
+            @$scope.message = "Player #{i+1} Wins"
+            $(".popUp").text @$scope.message
             $(".popUp").addClass "shown"
         @ball = new Ball (@width - @ballsize)/2, (@height - @ballsize)/2, @ballsize
 
@@ -121,9 +122,9 @@ class GameCtrl
 
     updatePads: =>
         for pad in [@pad1, @pad2]
-            if @hitDetect.hitBottomWall(pad)
+            if @hitDetect.hitBottomWall pad
                 pad.pos.y = @height - pad.size.height - 1
-            else if @hitDetect.hitTopWall(pad)
+            else if @hitDetect.hitTopWall pad
                 pad.pos.y = 1
             else
                 pad.pos.y += pad.velocity.y

@@ -25,20 +25,27 @@ p.row-fluid {
     align: center;
   }
   position: relative;
-  margin: 100px auto;
   border: {
     radius: 25%;
     color: blue;
-    width: 2px;
+    width: 4px;
   }
   background: white;
   font: {
     family: "Helvetica Neue";
     size: 72px;
-    color: blue;
   }
-  width: 50%;
+  width: 800px;
+  height:300px;
+  margin: {
+    right: auto;
+    bottom: 0;
+    left: auto;
+    top: -$gameHeight;
+  }
   display: none;
+  color: blue;
+  padding: 20px;
 }
 
 .popUp.shown {

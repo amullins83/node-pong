@@ -167,8 +167,9 @@ GameCtrl = (function() {
   GameCtrl.prototype.score = function(i) {
     this.$scope.score[i] += 1;
     if (this.$scope.score[i] >= this.scoreMax) {
-      this.status = "Player " + i + " Wins";
-      this.$scope.message = "Player " + i + " Wins";
+      this.status = "Player " + (i + 1) + " Wins";
+      this.$scope.message = "Player " + (i + 1) + " Wins";
+      $(".popUp").text(this.$scope.message);
       $(".popUp").addClass("shown");
     }
     return this.ball = new Ball((this.width - this.ballsize) / 2, (this.height - this.ballsize) / 2, this.ballsize);
