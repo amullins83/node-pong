@@ -33,7 +33,4 @@
     "type": "git",
     "url": "http://github.com/amullins83/node-pong.git"
   }
-  // "scripts": {
-  //   "test": "grunt jasmine"
-  // }
 }

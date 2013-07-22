@@ -69,7 +69,12 @@ class GameCtrl
         @hitDetect = new HitDetector(@width, @height)
 
         @status = "Running"
-        @updateInterval = setInterval @update, 1000 / @fps
+        @updateInterval = setInterval =>
+            if @status == "Running"
+                @update()
+            else
+                clearInterval @updateInterval
+        , 1000 / @fps
 
         $(document).on "keyup", (evt)=>
             @stop evt.which
@@ -86,11 +91,10 @@ class GameCtrl
             pad.releaseKey key
 
     update: =>
-        if @status == "Running"
-            @updateBall()
-            @updatePads()
-            @updateScore()
-            @redraw()
+        @updateBall()
+        @updatePads()
+        @updateScore()
+        @redraw()
 
     updateScore: =>
         if @hitDetect.hitLeftWall @ball

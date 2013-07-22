@@ -99,7 +99,13 @@ GameCtrl = (function() {
     this.ball = new Ball((this.width - this.ballsize) / 2, (this.height - this.ballsize) / 2, this.ballsize);
     this.hitDetect = new HitDetector(this.width, this.height);
     this.status = "Running";
-    this.updateInterval = setInterval(this.update, 1000 / this.fps);
+    this.updateInterval = setInterval(function() {
+      if (_this.status === "Running") {
+        return _this.update();
+      } else {
+        return clearInterval(_this.updateInterval);
+      }
+    }, 1000 / this.fps);
     $(document).on("keyup", function(evt) {
       return _this.stop(evt.which);
     });
@@ -133,12 +139,10 @@ GameCtrl = (function() {
   };
 
   GameCtrl.prototype.update = function() {
-    if (this.status === "Running") {
-      this.updateBall();
-      this.updatePads();
-      this.updateScore();
-      return this.redraw();
-    }
+    this.updateBall();
+    this.updatePads();
+    this.updateScore();
+    return this.redraw();
   };
 
   GameCtrl.prototype.updateScore = function() {

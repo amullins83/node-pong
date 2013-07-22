@@ -2,7 +2,6 @@
 
 express = require('express')
 routes = require('./routes')
-api = require('./routes/api')
 models = require('./models')
 
 app = module.exports = express()
@@ -32,7 +31,7 @@ app.get '/partial/:name', routes.partial
 app.get '/modal/:name', routes.modal
 
 # JSON API
-
+api = require "./routes/api"
 app.get '/api/name', api.name
 
 app.get '/api/games/:id', api.games.get
@@ -47,10 +46,7 @@ app.put '/api/users/:id', api.users.edit
 app.post '/api/users', api.users.create
 app.delete '/api/users/:id', api.users.destroy
 
-# redirect all others to the index (HTML5 history)
 app.get '*', routes.index
 
-# Start server
-
 app.listen process.env.PORT, ->
-  console.log "Server started ping-ponging on port #{process.env.PORT}"
+    console.log "Server started ping-ponging on port #{process.env.PORT}"
