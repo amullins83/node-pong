@@ -14,10 +14,10 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            tests: {
-                files: ["<%= jasmine.src %>", "<%= jasmine.options.specs %>"],
-                tasks: ["jasmine"]
-            },
+            // tests: {
+            //     files: ["<%= jasmine.src %>", "<%= jasmine.options.specs %>"],
+            //     tasks: ["jasmine"]
+            // },
             distjs: {
                 files: ['public/js/**/*.js'],
                 tasks: ["concat:js", "aws_s3:js"]

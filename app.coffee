@@ -3,7 +3,7 @@
 express = require('express')
 routes = require('./routes')
 api = require('./routes/api')
-#models = require('./models')
+models = require('./models')
 
 app = module.exports = express()
 
@@ -35,15 +35,17 @@ app.get '/modal/:name', routes.modal
 
 app.get '/api/name', api.name
 
-#app.get '/api/assignments/:id', api.assignments.get
-#app.get '/api/assignments', api.assignments.get
-#app.put '/api/assignments/:id', api.assignments.edit
-#app.post '/api/assignments', api.assignments.create
-#app.delete '/api/assignments/:id', api.assignments.destroy
+app.get '/api/games/:id', api.games.get
+app.get '/api/games', api.games.get
+app.put '/api/games/:id', api.games.edit
+app.post '/api/games', api.games.create
+app.delete '/api/games/:id', api.games.destroy
 
-#app.post '/api/grade/:problemId', api.grade.post
-
-#app.get '/api/user/:id', api.user.get
+app.get '/api/users/:id', api.users.get
+app.get '/api/users', api.users.get
+app.put '/api/users/:id', api.users.edit
+app.post '/api/users', api.users.create
+app.delete '/api/users/:id', api.users.destroy
 
 # redirect all others to the index (HTML5 history)
 app.get '*', routes.index

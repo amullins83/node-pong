@@ -78,12 +78,10 @@ class GameCtrl
             @move evt.which
 
     move: (key)=>
-        console.log "Key pressed: #{key}"
         for pad in @pads
             pad.pressKey key
 
     stop: (key)=>
-        console.log "Key released: #{key}"
         for pad in @pads
             pad.releaseKey key
 

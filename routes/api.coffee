@@ -6,4 +6,6 @@ exports.games = games = require "./api/games"
 
 Game = exports.Game = games.Game
 
-exports.user = require "./api/user"
+users = exports.users = require "./api/users"
+
+User = exports.User = users.User

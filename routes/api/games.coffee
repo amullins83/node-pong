@@ -20,7 +20,7 @@ models.ready ->
                 return @Game.findOne({id:req.params.id}).exec renderJSON(res)
             if req.query?
                 findObject = req.query
-            @Game.find(findObject).sort("id").exec renderJSON(res)
+            @Game.find(findObject).sort("startTime").exec renderJSON(res)
     
         create: (req, res)->
             @Game.create req.body, renderJSON(res)

@@ -37,13 +37,31 @@ db = exports.db = mongoose.connection
     
     
 exports.gameObject = gameObject =
-    id: String
     score: [
         Number
     ]
     players: [
         String
     ]
+    startTime: Number
+    runTime: Number
+    ball:
+        pos:
+            x: Number
+            y: Number
+        velocity:
+            x: Number
+            y: Number
+    pad1:
+        pos:
+            y: Number
+        velocity:
+            y: Number
+    pad2:
+        pos:
+            y: Number
+        velocity:
+            y: Number
 
 
 exports.userObject = userObject =
