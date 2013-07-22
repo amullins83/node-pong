@@ -13,7 +13,8 @@
     "mongoose": ">= 0.0.1",
     "angular": ">= 0.0.4",
     "coffee-script": ">= 1.6.2",
-    "login-utils": "*",
+    "moment":"*",
+    "bcrypt":"*",
     "knox": "*"
   },
   "devDependencies": {
