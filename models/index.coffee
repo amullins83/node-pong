@@ -74,14 +74,17 @@ exports.userObject = userObject =
     creationDate: type: Date, index: true
     lastLogin: type: Date, default: new Date
     socialMediaPersonae: [{type: Schema.ObjectId, ref: "SocialMediaUser"}]
-    submissions: Schema.Types.Mixed
 
+exports.Game = {}
+exports.User = {}
 
-exports.ready = ready = (handler)->
-    db.once "open", handler
-    
-    
-ready ->
-    Game = exports.Game = mongoose.model "Game", mongoose.Schema gameObject
-    User = exports.User = mongoose.model "User", mongoose.Schema userObject
+db.once "open", ->
+    exports.Game = mongoose.model "Game", mongoose.Schema gameObject
+    exports.User = mongoose.model "User", mongoose.Schema userObject
     console.log "Models Ready"
+
+exports.ready = ready = (models, callback)->
+    db.once "open", ->
+        models.Game = exports.Game 
+        models.User = exports.User
+        callback()

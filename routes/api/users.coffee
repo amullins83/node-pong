@@ -1,4 +1,4 @@
-models = models || require "../../models"
+models = require "../../models"
 
 renderJSON = (res)->
     (err, objects)->
@@ -7,13 +7,9 @@ renderJSON = (res)->
         else
             res.json objects
 
-module.exports = users = {}
-
-
-models.ready ->
-    users =
+module.exports  =
         User: models.User
-
+    
         get: (req, res)->
             findObject = {}
             if req.params.id?
@@ -21,19 +17,19 @@ models.ready ->
             if req.query?
                 findObject = req.query
             @User.find(findObject).sort("id").exec renderJSON(res)
-    
+        
         create: (req, res)->
             @User.create req.body, renderJSON(res)
-    
+        
         edit:  (req, res)->
             if req.params.id?
                 return @User.findOneAndUpdate({id:req.params.id}, req.body.updateObject).exec renderJSON(res)
             @User.findOneAndUpdate req.body.findObject, req.body.updateObject, renderJSON(res)
-    
+        
         destroy: (req, res)->
             if req.params.id?
                 return @User.remove {id: req.params.id}, renderJSON(res)
             @User.remove req.body, renderJSON(res)
-            
+                
         count: (req, res)->
             @User.count renderJSON(res)
