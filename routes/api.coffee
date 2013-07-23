@@ -4,14 +4,8 @@ exports.name = (req, res)->
 
 models = require "../models"
 
-Game = exports.Game = {}
-
-User = exports.User = {}
-
-models.ready models, ->
-    Game = exports.Game = exports.games.Game = models.Game
-    User = exports.User = exports.users.User = models.User
-
+Game = exports.Game = models.Game
+User = exports.User = models.User
 
 renderJSON = (res)->
     (err, objects)->
@@ -71,4 +65,3 @@ users = exports.users  =
                 
         count: (req, res)->
             User.count renderJSON(res)
-

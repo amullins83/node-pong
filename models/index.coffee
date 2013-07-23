@@ -75,16 +75,33 @@ exports.userObject = userObject =
     lastLogin: type: Date, default: new Date
     socialMediaPersonae: [{type: Schema.ObjectId, ref: "SocialMediaUser"}]
 
-exports.Game = {}
-exports.User = {}
+userSchema = mongoose.Schema userObject
+
+userSchema.pre "save", (next)->
+    unless @isModified 'password'
+        return next()
+
+    bcrypt.genSalt process.env.SALT_WORK_FACTOR, (err, salt)=>
+        if err
+            return next err
+
+        bcrypt.hash @password, salt, (err, hash)=>
+            if err
+                return next err
+            @password = hash
+            next()
+
+userSchema.methods.comparePassword = (candidatePassword, cb)->
+    bcrypt.compare candidatePassword, @password, (err, isMatch)->
+        if err
+            return cb err
+        cb null, isMatch
+
+exports.Game = mongoose.model "Game", mongoose.Schema gameObject
+User = exports.User = mongoose.model "User", userSchema
 
 db.once "open", ->
-    exports.Game = mongoose.model "Game", mongoose.Schema gameObject
-    exports.User = mongoose.model "User", mongoose.Schema userObject
     console.log "Models Ready"
 
-exports.ready = ready = (models, callback)->
-    db.once "open", ->
-        models.Game = exports.Game 
-        models.User = exports.User
-        callback()
+exports.ready = ready = (callback)->
+    db.once "open", callback
