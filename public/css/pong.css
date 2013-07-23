@@ -4,21 +4,22 @@ p.row-fluid {
 .popUp {
   text-align: center;
   position: relative;
-  border-radius: 25%;
+  border-radius: 15px;
   border-color: blue;
   border-width: 4px;
   background: white;
   font-family: "Helvetica Neue";
   font-size: 72px;
-  width: 800px;
-  height: 300px;
+  width: 450px;
+  height: 100px;
   margin-right: auto;
   margin-bottom: 0;
   margin-left: auto;
-  margin-top: -400px;
+  margin-top: -200px;
   display: none;
   color: blue;
-  padding: 20px; }
+  padding: 72px 20px 0 20px;
+  box-shadow: 0 3px 10px black; }
 
 .popUp.shown {
   display: block; }

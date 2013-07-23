@@ -26,7 +26,7 @@ p.row-fluid {
   }
   position: relative;
   border: {
-    radius: 25%;
+    radius: 15px;
     color: blue;
     width: 4px;
   }
@@ -35,17 +35,18 @@ p.row-fluid {
     family: "Helvetica Neue";
     size: 72px;
   }
-  width: 800px;
-  height:300px;
+  width: 450px;
+  height: 100px;
   margin: {
     right: auto;
     bottom: 0;
     left: auto;
-    top: -$gameHeight;
+    top: -$gameHeight/2;
   }
   display: none;
   color: blue;
-  padding: 20px;
+  padding: 72px 20px 0 20px;
+  box-shadow: 0 3px 10px black;
 }
 
 .popUp.shown {

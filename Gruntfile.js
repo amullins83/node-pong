@@ -92,9 +92,11 @@ module.exports = function(grunt) {
         },
         coffee: {
             dist: {
+                options: {
+                    bare: true
+                },
                 files: [{
                     expand: true,
-                    bare: true,
                     flatten: true,
                     cwd: "coffee",
                     src: ["*.coffee"],
