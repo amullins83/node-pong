@@ -25,6 +25,14 @@ module.exports = function(grunt) {
             distcss: {
                 files: ['public/css/**/*.css'],
                 tasks: ["concat:css", "aws_s3:css"]
+            },
+            coffee: {
+                files: ['coffee/*.coffee'],
+                tasks: ['coffee']
+            },
+            sass: {
+                files: ['scss/*.scss'],
+                tasks: ['sass']
             }
         },
         concat: {
@@ -81,6 +89,30 @@ module.exports = function(grunt) {
                     {expand: true, cwd: "dist/js", src: ["application.js"], dest: "assets/js"}
                 ]
             }
+        },
+        coffee: {
+            dist: {
+                files: [{
+                    expand: true,
+                    bare: true,
+                    flatten: true,
+                    cwd: "coffee",
+                    src: ["*.coffee"],
+                    dest: "public/js/",
+                    ext: ".js"
+                }]
+            }
+        },
+        sass: {
+            dist: {
+                files: [{
+                    expand: true,
+                    cwd: 'scss',
+                    src: ['*.scss'],
+                    dest: 'public/css/',
+                    ext: '.css'
+                }]
+            }
         }
     });
 
@@ -88,6 +120,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-watch");
     grunt.loadNpmTasks("grunt-contrib-connect");
+    grunt.loadNpmTasks("grunt-contrib-coffee");
+    grunt.loadNpmTasks("grunt-contrib-sass");
     grunt.loadNpmTasks("grunt-aws-s3");
 
     grunt.registerTask("default", ["watch"]);

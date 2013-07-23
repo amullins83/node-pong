@@ -13,8 +13,8 @@
     "mongoose": ">= 0.0.1",
     "angular": ">= 0.0.4",
     "coffee-script": ">= 1.6.2",
-    "moment":"*",
-    "bcrypt":"*",
+    "moment": "*",
+    "bcrypt": "*",
     "knox": "*"
   },
   "devDependencies": {
@@ -28,7 +28,9 @@
     "grunt-template-jasmine-requirejs": "~0.1.1",
     "http-json-request": "*",
     "grunt-aws-s3": "~0.3.0",
-    "aws-sdk": "~1.4.0"
+    "aws-sdk": "~1.4.0",
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-contrib-sass": "~0.4.1"
   },
   "repository": {
     "type": "git",
