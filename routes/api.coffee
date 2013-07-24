@@ -17,19 +17,17 @@ renderJSON = (res)->
 
 games = exports.games =        
         get: (req, res)->
-            findObject = {}
-            if req.params.id?
-                the_game = Game.findOne({id:req.params.id})
-                if req.user in the_game.players
-                    return the_game.exec renderJSON(res)
-                else
-                    return res.json {}
-            if req.query?
-                findObject = req.query
-            Game.find(findObject).filter("players": (players)->
-                req.user in players
-            ).sort("startTime").exec renderJSON(res)
-            
+            if req.user?
+                findObject = {}
+                if req.params.id?
+                    return Game.findOne(id:req.params.id, players: $all: [req.user]).exec renderJSON(res)
+                if req.query?
+                    findObject = req.query
+                findObject["players"] = { "$all": [req.user] }
+                Game.find(findObject).sort("startTime").exec renderJSON(res)
+            else
+                return res.json {}
+
         create: (req, res)->
             Game.create req.body, renderJSON(res)
             
