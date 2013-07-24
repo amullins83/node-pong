@@ -10,7 +10,8 @@ class DialogCtrl
         @$scope.openSignIn = =>
             d = @$dialog.dialog @$scope.opts
             d.open().then (result)=>
-                @$scope.didSignIn = result
+                @$scope.didSignIn = result?
+                @$scope.user = result
                 console.log result
 
     @$inject: ['$scope', '$http', '$dialog']
@@ -150,8 +151,21 @@ class TodoCtrl
 
 class SignInCtrl
     constructor: (@$scope, @$http, User, @dialog)->
-        @$scope.user = {}
+        @$scope.user = "Player 1"
         @$scope.close = (result)=>
             @dialog.close result
+
+        @$scope.signIn = =>
+            postData =
+                email: @$scope.email
+                password: @$scope.password
+
+            @$http.post("./login", postData).success( (data, status, headers, config)=>
+                @$scope.user = data
+                @dialog.close data
+            ).error (data, status, headers, config)=>
+                @$scope.user = "Player 1"
+                @dialog.close false
+
 
     @$inject: ['$scope', '$http', 'User', 'dialog']

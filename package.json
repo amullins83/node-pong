@@ -19,7 +19,9 @@
     "passport": "~0.1.17",
     "passport-local": "~0.1.6",
     "passport-facebook": "~0.1.5",
-    "passport-twitter": "~0.1.5"
+    "passport-twitter": "~0.1.5",
+    "session-mongoose": "~0.2.3",
+    "connect": "~2.8.4"
   },
   "devDependencies": {
     "grunt": "*",

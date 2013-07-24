@@ -23,6 +23,7 @@ class MyArray extends Array:
 
     
 mongoose = require "mongoose"
+bcrypt = require "bcrypt"
 
 
 if process.env.TEST_MODE
@@ -43,8 +44,13 @@ exports.gameObject = gameObject =
     players: [
         String
     ]
-    startTime: Number
+    startTime: Date
     runTime: Number
+    events: [
+        name: String
+        user: String
+        time: Date
+    ]
     ball:
         pos:
             x: Number
@@ -63,14 +69,15 @@ exports.gameObject = gameObject =
         velocity:
             y: Number
 
+Game = exports.Game = mongoose.model "Game", mongoose.Schema gameObject
+
 
 exports.userObject = userObject =
-    firstName: type: String, required: true
-    lastName: type: String, required: true
-    userName: type: String, required: true, index: unique: true
+    firstName: type: String
+    lastName: type: String
+    userName: type: String
     email: type: String, required: true, index: unique: true
     password: type: String, required: true
-    salt: type: String, required: true
     creationDate: type: Date, index: true
     lastLogin: type: Date, default: new Date
     socialMediaPersonae: [{type: Schema.ObjectId, ref: "SocialMediaUser"}]
@@ -81,7 +88,7 @@ userSchema.pre "save", (next)->
     unless @isModified 'password'
         return next()
 
-    bcrypt.genSalt process.env.SALT_WORK_FACTOR, (err, salt)=>
+    bcrypt.genSalt parseInt(process.env.SALT_WORK_FACTOR, 10), (err, salt)=>
         if err
             return next err
 
@@ -89,15 +96,17 @@ userSchema.pre "save", (next)->
             if err
                 return next err
             @password = hash
+            @salt = salt
             next()
 
 userSchema.methods.comparePassword = (candidatePassword, cb)->
     bcrypt.compare candidatePassword, @password, (err, isMatch)->
         if err
+            console.dir err
             return cb err
         cb null, isMatch
 
-exports.Game = mongoose.model "Game", mongoose.Schema gameObject
+
 User = exports.User = mongoose.model "User", userSchema
 
 db.once "open", ->

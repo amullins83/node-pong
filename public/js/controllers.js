@@ -16,7 +16,8 @@ DialogCtrl = (function() {
       var d;
       d = _this.$dialog.dialog(_this.$scope.opts);
       return d.open().then(function(result) {
-        _this.$scope.didSignIn = result;
+        _this.$scope.didSignIn = result != null;
+        _this.$scope.user = result;
         return console.log(result);
       });
     };
@@ -234,9 +235,23 @@ SignInCtrl = (function() {
     this.$scope = $scope;
     this.$http = $http;
     this.dialog = dialog;
-    this.$scope.user = {};
+    this.$scope.user = "Player 1";
     this.$scope.close = function(result) {
       return _this.dialog.close(result);
+    };
+    this.$scope.signIn = function() {
+      var postData;
+      postData = {
+        email: _this.$scope.email,
+        password: _this.$scope.password
+      };
+      return _this.$http.post("./login", postData).success(function(data, status, headers, config) {
+        _this.$scope.user = data;
+        return _this.dialog.close(data);
+      }).error(function(data, status, headers, config) {
+        _this.$scope.user = "Player 1";
+        return _this.dialog.close(false);
+      });
     };
   }
 
