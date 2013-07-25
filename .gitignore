@@ -232,3 +232,4 @@ node_modules/*
 .zshrc
 other*.js
 other*.coffee
+*.sublime*
