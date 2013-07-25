@@ -14,6 +14,10 @@ class DialogCtrl
                 @$scope.user = result
                 console.log result
 
+        @$scope.logOut = =>
+            @$http.delete("./logout").success (data, status, headers, config)=>
+                @$scope.user = null
+
     @$inject: ['$scope', '$http', '$dialog']
 
 

@@ -4,10 +4,10 @@ express = require 'express'
 routes = require './routes'
 models = require './models'
 
-SessionStore = require("session-mongoose")(express)
-store = new SessionStore
-    url: process.env.MONGOLAB_URI
-    sweeper: false
+#SessionStore = require("session-mongoose")(express)
+#store = new SessionStore
+#    url: process.env.MONGOLAB_URI
+#    sweeper: false
 
 passport = require 'passport'
 
@@ -25,9 +25,6 @@ app.configure ->
     app.use express.methodOverride()
     app.use express.static(__dirname + '/public')
     app.use express.session
-        cookie:
-            maxAge: 3600000
-        store: store
         secret: process.env.SESSION_SECRET
 
     app.use passport.initialize()
@@ -50,7 +47,7 @@ User = models.User
 passport.deserializeUser (id, done)->
     User.findById id, done
 
-passport.use new LocalStrategy (email, password, done)->
+passport.use new LocalStrategy {usernameField:"email"}, (email, password, done)->
     console.log "Inside LocalStrategy(#{email}, #{password}, callback)"
     User.findOne {email: email}, (err, user)->
         if err
@@ -114,12 +111,22 @@ app.post "/login", (req, res, next)->
             if err
                 console.dir err
                 return next err
-            res.json user: req.user
+            res.json req.user
     )(req, res, next)
 
-app.get "/logout", (req, res)->
+logout = (req, res)->
     req.logout()
     res.redirect "/"
+
+app.post "/logout", logout
+
+app.delete "/logout", (req, res)->
+    req.logout()
+    res.json message:"logout succeeded"
+
+app.get "/logout", logout
+
+
 
 # Start
 app.listen process.env.PORT, ->

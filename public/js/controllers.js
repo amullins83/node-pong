@@ -21,6 +21,11 @@ DialogCtrl = (function() {
         return console.log(result);
       });
     };
+    this.$scope.logOut = function() {
+      return _this.$http["delete"]("./logout").success(function(data, status, headers, config) {
+        return _this.$scope.user = null;
+      });
+    };
   }
 
   DialogCtrl.$inject = ['$scope', '$http', '$dialog'];

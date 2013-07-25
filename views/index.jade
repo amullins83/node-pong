@@ -14,10 +14,11 @@ block body
             -if(!user)
               button.btn.btn-primary(type="button", ng-click="openSignIn()") Sign In
             -else
-              button.btn.btn-primary(type="button", ng-click="logOut()") Sign Out
+              a(href="/logout", ng-click="logOut()") Sign Out
           -if(user) {
-            li |
-              ="Welcome " + user.userName
+          li
+            a(href='/') 
+              =" Welcome " + user.email
           -}
   .container-fluid
     div(ng-controller='AppCtrl')
