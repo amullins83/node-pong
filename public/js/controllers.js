@@ -76,10 +76,11 @@ GameCtrl = (function() {
 
   GameCtrl.prototype.padOffset = 20;
 
-  function GameCtrl($scope, $http, Game, Pad, Ball, HitDetector) {
+  function GameCtrl($scope, $http, $timeout, Game, Pad, Ball, HitDetector) {
     var _this = this;
     this.$scope = $scope;
     this.$http = $http;
+    this.$timeout = $timeout;
     this.redraw = __bind(this.redraw, this);
     this.updatePads = __bind(this.updatePads, this);
     this.updateBall = __bind(this.updateBall, this);
@@ -88,36 +89,53 @@ GameCtrl = (function() {
     this.update = __bind(this.update, this);
     this.stop = __bind(this.stop, this);
     this.move = __bind(this.move, this);
-    $(".popUp").removeClass("shown");
+    this.updateLater = __bind(this.updateLater, this);
     this.$scope.games = [];
     this.$scope.feedback = [];
-    this.$scope.games = Game.query();
     this.$scope.problems = [];
     this.$scope.score = [0, 0];
-    this.pad1 = new Pad("pad1", this.padOffset, (this.height - this.padHeight) / 2, this.padWidth, this.padHeight, "w", "s");
-    this.pad2 = new Pad("pad2", this.width - this.padWidth - this.padOffset, (this.height - this.padHeight) / 2, this.padWidth, this.padHeight, "up", "down");
-    this.pads = [this.pad1, this.pad2];
-    this.ball = new Ball((this.width - this.ballsize) / 2, (this.height - this.ballsize) / 2, this.ballsize);
-    this.hitDetect = new HitDetector(this.width, this.height);
-    this.status = "Running";
-    this.updateInterval = setInterval(function() {
-      if (_this.status === "Running") {
-        return _this.update();
-      } else {
-        return clearInterval(_this.updateInterval);
+    this.$scope.pad1 = new Pad("pad1", this.padOffset, (this.height - this.padHeight) / 2, this.padWidth, this.padHeight, "w", "s");
+    this.$scope.pad2 = new Pad("pad2", this.width - this.padWidth - this.padOffset, (this.height - this.padHeight) / 2, this.padWidth, this.padHeight, "up", "down");
+    this.$scope.pads = [this.$scope.pad1, this.$scope.pad2];
+    this.$scope.ball = new Ball((this.width - this.ballsize) / 2, (this.height - this.ballsize) / 2, this.ballsize);
+    this.$scope.hitDetect = new HitDetector(this.width, this.height);
+    this.$scope.status = "Running";
+    this.$scope.move = function(key) {
+      var pad, _i, _len, _ref, _results;
+      _ref = _this.$scope.pads;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        pad = _ref[_i];
+        _results.push(pad.pressKey(key));
+      }
+      return _results;
+    };
+    this.$scope.stop = function(key) {
+      var pad, _i, _len, _ref, _results;
+      _ref = _this.$scope.pads;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        pad = _ref[_i];
+        _results.push(pad.releaseKey(key));
+      }
+      return _results;
+    };
+    this.updateLater();
+  }
+
+  GameCtrl.prototype.updateLater = function() {
+    var _this = this;
+    return this.$timeout(function() {
+      if (_this.$scope.status === "Running") {
+        _this.update();
+        return _this.updateLater();
       }
     }, 1000 / this.fps);
-    $(document).on("keyup", function(evt) {
-      return _this.stop(evt.which);
-    });
-    $(document).on("keydown", function(evt) {
-      return _this.move(evt.which);
-    });
-  }
+  };
 
   GameCtrl.prototype.move = function(key) {
     var pad, _i, _len, _ref, _results;
-    _ref = this.pads;
+    _ref = this.$scope.pads;
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       pad = _ref[_i];
@@ -128,7 +146,7 @@ GameCtrl = (function() {
 
   GameCtrl.prototype.stop = function(key) {
     var pad, _i, _len, _ref, _results;
-    _ref = this.pads;
+    _ref = this.$scope.pads;
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       pad = _ref[_i];
@@ -145,9 +163,9 @@ GameCtrl = (function() {
   };
 
   GameCtrl.prototype.updateScore = function() {
-    if (this.hitDetect.hitLeftWall(this.ball)) {
+    if (this.$scope.hitDetect.hitLeftWall(this.$scope.ball)) {
       return this.score(1);
-    } else if (this.hitDetect.hitRightWall(this.ball)) {
+    } else if (this.$scope.hitDetect.hitRightWall(this.$scope.ball)) {
       return this.score(0);
     }
   };
@@ -155,36 +173,34 @@ GameCtrl = (function() {
   GameCtrl.prototype.score = function(i) {
     this.$scope.score[i] += 1;
     if (this.$scope.score[i] >= this.scoreMax) {
-      this.status = "Player " + (i + 1) + " Wins";
+      this.$scope.status = "Player " + (i + 1) + " Wins";
       this.$scope.message = "Player " + (i + 1) + " Wins";
-      $(".popUp").text(this.$scope.message);
-      $(".popUp").addClass("shown");
     }
-    return this.ball = new Ball((this.width - this.ballsize) / 2, (this.height - this.ballsize) / 2, this.ballsize);
+    return this.$scope.ball = new Ball((this.width - this.ballsize) / 2, (this.height - this.ballsize) / 2, this.ballsize);
   };
 
   GameCtrl.prototype.updateBall = function() {
-    if (this.hitDetect.hit(this.ball, this.pad1) || this.hitDetect.hit(this.ball, this.pad2)) {
-      if (this.hitDetect.hitRight(this.ball, this.pad1) || this.hitDetect.hitLeft(this.ball, this.pad2)) {
-        this.ball.velocity.x *= -1;
+    if (this.$scope.hitDetect.hit(this.$scope.ball, this.$scope.pad1) || this.$scope.hitDetect.hit(this.$scope.ball, this.$scope.pad2)) {
+      if (this.$scope.hitDetect.hitRight(this.$scope.ball, this.$scope.pad1) || this.$scope.hitDetect.hitLeft(this.$scope.ball, this.$scope.pad2)) {
+        this.$scope.ball.velocity.x *= -1;
       }
     }
-    if (this.hitDetect.hitVertical(this.ball, this.pad1) || this.hitDetect.hitVertical(this.ball, this.pad2) || this.hitDetect.hitVerticalWall(this.ball)) {
-      this.ball.velocity.y *= -1;
+    if (this.$scope.hitDetect.hitVertical(this.$scope.ball, this.$scope.pad1) || this.$scope.hitDetect.hitVertical(this.$scope.ball, this.$scope.pad2) || this.$scope.hitDetect.hitVerticalWall(this.$scope.ball)) {
+      this.$scope.ball.velocity.y *= -1;
     }
-    this.ball.pos.x += this.ball.velocity.x;
-    return this.ball.pos.y += this.ball.velocity.y;
+    this.$scope.ball.pos.x += this.$scope.ball.velocity.x;
+    return this.$scope.ball.pos.y += this.$scope.ball.velocity.y;
   };
 
   GameCtrl.prototype.updatePads = function() {
     var pad, _i, _len, _ref, _results;
-    _ref = [this.pad1, this.pad2];
+    _ref = this.$scope.pads;
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       pad = _ref[_i];
-      if (this.hitDetect.hitBottomWall(pad)) {
+      if (this.$scope.hitDetect.hitBottomWall(pad)) {
         _results.push(pad.pos.y = this.height - pad.size.height - 1);
-      } else if (this.hitDetect.hitTopWall(pad)) {
+      } else if (this.$scope.hitDetect.hitTopWall(pad)) {
         _results.push(pad.pos.y = 1);
       } else {
         _results.push(pad.pos.y += pad.velocity.y);
@@ -194,27 +210,19 @@ GameCtrl = (function() {
   };
 
   GameCtrl.prototype.redraw = function() {
-    var index, item, _i, _j, _len, _len1, _ref, _ref1, _results;
-    _ref = [this.pad1, this.pad2, this.ball];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      item = _ref[_i];
-      $("#" + item.id).css({
-        top: item.top()
-      });
-      $("#" + item.id).css({
-        left: item.left()
-      });
-    }
-    _ref1 = [0, 1];
-    _results = [];
-    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-      index = _ref1[_j];
-      _results.push($("#score" + (index + 1)).text(this.$scope.score[index]));
-    }
-    return _results;
+    this.$scope.pad1style = {
+      top: this.$scope.pad1.pos.y
+    };
+    this.$scope.pad2style = {
+      top: this.$scope.pad2.pos.y
+    };
+    return this.$scope.ballstyle = {
+      top: this.$scope.ball.pos.y,
+      left: this.$scope.ball.pos.x
+    };
   };
 
-  GameCtrl.$inject = ['$scope', '$http', 'Game', 'Pad', 'Ball', 'HitDetector'];
+  GameCtrl.$inject = ['$scope', '$http', '$timeout', 'Game', 'Pad', 'Ball', 'HitDetector'];
 
   return GameCtrl;
 

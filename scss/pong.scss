@@ -43,14 +43,9 @@ p.row-fluid {
     left: auto;
     top: -$gameHeight/2;
   }
-  display: none;
   color: blue;
   padding: 72px 20px 0 20px;
   box-shadow: 0 3px 10px black;
-}
-
-.popUp.shown {
-  display: block;
 }
 
 .field {
