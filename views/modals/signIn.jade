@@ -1,4 +1,4 @@
-.modal-header
+form.modal-header(ng-submit="signIn()")
     h3 Sign In
     .modal-body
         .row-fluid
@@ -12,4 +12,4 @@
     .modal-footer
         .row
             button.btn(ng-click="close(false)") Close
-            button.btn.btn-primary(ng-click="signIn()") Sign In
+            input.btn.btn-primary(type="submit", value="Sign In") 
