@@ -125,12 +125,13 @@ GameCtrl = (function() {
 
   GameCtrl.prototype.updateLater = function() {
     var _this = this;
-    return this.$timeout(function() {
-      if (_this.$scope.status === "Running") {
+    this.$timeout.cancel(this.updateInterval);
+    if (this.$scope.status === "Running") {
+      return this.updateInterval = this.$timeout(function() {
         _this.update();
         return _this.updateLater();
-      }
-    }, 1000 / this.fps);
+      }, 1000 / this.fps);
+    }
   };
 
   GameCtrl.prototype.move = function(key) {

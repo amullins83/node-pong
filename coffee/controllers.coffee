@@ -84,11 +84,12 @@ class GameCtrl
         @updateLater()
 
     updateLater: =>
-        @$timeout =>
-            if @$scope.status == "Running"
+        @$timeout.cancel @updateInterval
+        if @$scope.status == "Running"
+            @updateInterval = @$timeout =>
                 @update()
                 @updateLater()
-        , 1000 / @fps
+            , 1000 / @fps
 
 
     move: (key)=>
