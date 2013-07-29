@@ -15,8 +15,19 @@ resource = (name, filterFunction, sortFunction)->
     name = name.toLowerCase()
     Name = name[0].toUpperCase() + name[1..]
     Model = models[Name]
+    pluralize = (word)->
+            return word + 's' unless word[word.length - 1].toLowerCase() in ['s', 'x', 'y']
+            return word[..-2] + 'ies' if word[word.length -1] == 'y'
+            return word + 'es'
+    name = pluralize name
+
     result =
+<<<<<<< HEAD
         name: name + "s"
+=======
+        name: name
+
+>>>>>>> 74ba7a331efd60ecbc5e031502d5dcb9fd40b285
         get: (req, res)->
             filter = filterFunction(req)
             sort = sortFunction()
