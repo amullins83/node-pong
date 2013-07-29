@@ -7,24 +7,27 @@ class DialogCtrl
             templateUrl: 'modal/signIn'
             controller:  SignInCtrl
 
-        @$scope.user = User.query()[0]
+        @$scope.users = User.query()
+
+        @$scope.$watch "users.length", =>
+            @$scope.user = @$scope.users[0]
+
         @$scope.logOutText = "Log Out"
         @$scope.signInText = "Sign In"
 
-        @$scope.signInOutText = if @$scope.user? @$scope.logOutText else @$scope.signInText
+        @$scope.signInOutText = =>
+            if @$scope.user? then @$scope.logOutText else @$scope.signInText
 
         @$scope.openSignIn = =>
             d = @$dialog.dialog @$scope.opts
             d.open().then (result)=>
                 if result? and result.email? 
                     @$scope.didSignIn = true
-                    @$scope.signInOutText = "Log Out"
-                    @$scope.user = result
+                    @$scope.users = User.query()
 
         @$scope.logOut = =>
             @$http.delete("./logout").success (data, status, headers, config)=>
-                @$scope.signInOutText = "Sign In"
-                @$scope.user = null
+                @$scope.users = User.query()
 
         @$scope.signInOutButton = =>
             unless @$scope.user?
@@ -61,20 +64,18 @@ class GameCtrl
     padWidth: 10
     padOffset: 20
 
-    constructor: (@$scope, @$http, @$timeout, Game, Pad, Ball, HitDetector)->
+    constructor: (@$scope, @$http, @$timeout, Game, User, Pad, Ball, HitDetector)->
         @$scope.games = []
         @$scope.feedback = []
         #@$scope.games = Game.query()
+        @$scope.users = User.query()
+
+        @$scope.$watch "users.length", =>
+            @$scope.user = @$scope.users[0]
+
         @$scope.problems = []
 
         @$scope.score = [0, 0]
-
-        #@$scope.$watch "selectedGameId", =>
-        #    @$scope.selectedGame = Game.get( {id: @$scope.selectedGameId}, (Game)=>
-        #        @$scope.score = Game.score
-        #    ) if @$scope.selectedGameId?        
-        
-
 
         @$scope.pad1 = new Pad "pad1", @padOffset, (@height - @padHeight) / 2, @padWidth, @padHeight, "w", "s"
         @$scope.pad2 = new Pad "pad2", (@width - @padWidth - @padOffset), (@height - @padHeight) / 2, @padWidth, @padHeight, "up", "down"
@@ -164,7 +165,7 @@ class GameCtrl
             top: @$scope.ball.pos.y
             left: @$scope.ball.pos.x
 
-    @$inject: ['$scope', '$http', '$timeout','Game', 'Pad', 'Ball', 'HitDetector']
+    @$inject: ['$scope', '$http', '$timeout','Game', 'User', 'Pad', 'Ball', 'HitDetector']
 
 
 class TodoCtrl

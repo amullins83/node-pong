@@ -11,8 +11,8 @@ block body
           li
             a(href='todo') Todo
           li
-            button.btn.btn-primary(type="button", ng-click="signInOutButton()") {{ signInOutText }}
-        p(ng-show="!!user").navbar-text Welcome, {{ user.email }}
+            button.btn.btn-primary(type="button", ng-click="signInOutButton()") {{ signInOutText() }}
+        p(ng-show="!!user").navbar-text Welcome, {{ user.userName }}
   .container-fluid
     div(ng-controller='AppCtrl')
       div(ng-view)
