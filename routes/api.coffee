@@ -15,15 +15,8 @@ resource = (name, filterFunction)->
     name = name.toLowerCase()
     Name = name[0].toUpperCase() + name[1..]
     Model = models[Name]
-    pluralize = (word)->
-            return word + 's' unless word[word.length - 1].toLowerCase() in ['s', 'x', 'y']
-            return word[..-2] + 'ies' if word[word.length -1] == 'y'
-            return word + 'es'
-    name = pluralize name
-
     result =
         name: name
-
         get: (req, res)->
             filter = filterFunction(req)
             console.dir filter
