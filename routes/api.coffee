@@ -22,12 +22,8 @@ resource = (name, filterFunction, sortFunction)->
     name = pluralize name
 
     result =
-<<<<<<< HEAD
         name: name + "s"
-=======
-        name: name
 
->>>>>>> 74ba7a331efd60ecbc5e031502d5dcb9fd40b285
         get: (req, res)->
             filter = filterFunction(req)
             sort = sortFunction()
