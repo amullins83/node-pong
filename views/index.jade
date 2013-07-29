@@ -1,18 +1,19 @@
 extends layout
 
 block body
-    form.navbar.navbar-fixed-top.navbar-form(ng-controller="DialogCtrl")
-        .navbar-inner
-            .container-fluid
-                a.brand(href='#') Node Pong
-                ul.nav
-                    li
-                        a(href='game') Game
-                    li
-                        a(href='todo') Todo
-                    li
-                        button.btn.btn-primary(type="button", ng-click="signInOutButton()") {{ signInOutText() }}
-                p(ng-show="!!user").navbar-text Welcome, {{ user.userName }}
+    .container-fluid
+        form.navbar.navbar-fixed-top.navbar-form(ng-controller="DialogCtrl")
+            .navbar-inner
+                .container-fluid
+                    a.brand(href='#') Node Pong
+                    ul.nav
+                        li
+                            a(href='game') Game
+                        li
+                            a(href='todo') Todo
+                        li
+                            button.btn.btn-primary(type="button", ng-click="signInOutButton()") {{ signInOutText() }}
+                    p(ng-show="!!user").navbar-text Welcome, {{ user.userName }}
     .container-fluid
         div(ng-controller='AppCtrl')
             div(ng-view)
