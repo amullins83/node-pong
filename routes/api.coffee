@@ -16,6 +16,7 @@ resource = (name, filterFunction)->
     Name = name[0].toUpperCase() + name[1..]
     Model = models[Name]
     result =
+        name: name
         get: (req, res)->
             filter = filterFunction(req)
             console.dir filter
@@ -73,8 +74,18 @@ resource = (name, filterFunction)->
                 findObject[key] = filter[key]
             Model.count findObject, renderJSON(res)
 
+        resourceForApp: (app)->
+            app.get "/api/#{@name}/:id", @get
+            app.get "/api/#{@name}", @get
+            app.put "/api/#{@name}/:id", @edit
+            app.post "/api/#{@name}", @create
+            app.delete "/api/#{@name}/:id", @destroy
+
 games = exports.games = resource "Game", (req)->
-    players: $all: [req.user._id]
+    if req.user? and req.user._id?
+        return players: $all: [req.user._id]
+    else
+        return players: 'No user defined'
 
 # games = exports.games =        
 #         get: (req, res)->
@@ -106,7 +117,10 @@ games = exports.games = resource "Game", (req)->
 #             Game.count renderJSON(res)
 
 users = exports.users = resource "User", (req)->
-    _id: req.user._id
+    if req.user? and req.user._id?
+        return _id: req.user._id
+    else
+        return _id: 'No user defined'
 
 # users = exports.users  =
 #         get: (req, res)->

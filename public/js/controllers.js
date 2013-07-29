@@ -3,8 +3,9 @@ var AppCtrl, DialogCtrl, GameCtrl, SignInCtrl, TodoCtrl,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 DialogCtrl = (function() {
-  function DialogCtrl($scope, $http, $dialog) {
-    var _this = this;
+  function DialogCtrl($scope, $http, $dialog, User) {
+    var _base,
+      _this = this;
     this.$scope = $scope;
     this.$http = $http;
     this.$dialog = $dialog;
@@ -12,23 +13,37 @@ DialogCtrl = (function() {
       templateUrl: 'modal/signIn',
       controller: SignInCtrl
     };
+    this.$scope.user = User.query()[0];
+    this.$scope.logOutText = "Log Out";
+    this.$scope.signInText = "Sign In";
+    this.$scope.signInOutText = (typeof (_base = this.$scope).user === "function" ? _base.user(this.$scope.logOutText) : void 0) ? void 0 : this.$scope.signInText;
     this.$scope.openSignIn = function() {
       var d;
       d = _this.$dialog.dialog(_this.$scope.opts);
       return d.open().then(function(result) {
-        _this.$scope.didSignIn = result != null;
-        _this.$scope.user = result;
-        return console.log(result);
+        if ((result != null) && (result.email != null)) {
+          _this.$scope.didSignIn = true;
+          _this.$scope.signInOutText = "Log Out";
+          return _this.$scope.user = result;
+        }
       });
     };
     this.$scope.logOut = function() {
       return _this.$http["delete"]("./logout").success(function(data, status, headers, config) {
+        _this.$scope.signInOutText = "Sign In";
         return _this.$scope.user = null;
       });
     };
+    this.$scope.signInOutButton = function() {
+      if (_this.$scope.user == null) {
+        return _this.$scope.openSignIn();
+      } else {
+        return _this.$scope.logOut();
+      }
+    };
   }
 
-  DialogCtrl.$inject = ['$scope', '$http', '$dialog'];
+  DialogCtrl.$inject = ['$scope', '$http', '$dialog', 'User'];
 
   return DialogCtrl;
 

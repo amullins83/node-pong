@@ -82,17 +82,8 @@ app.get '/modal/:name', routes.modal
 api = require "./routes/api"
 app.get '/api/name', api.name
 
-app.get '/api/games/:id', api.games.get
-app.get '/api/games', api.games.get
-app.put '/api/games/:id', api.games.edit
-app.post '/api/games', api.games.create
-app.delete '/api/games/:id', api.games.destroy
-
-app.get '/api/users/:id', api.users.get
-app.get '/api/users', api.users.get
-app.put '/api/users/:id', api.users.edit
-app.post '/api/users', api.users.create
-app.delete '/api/users/:id', api.users.destroy
+api.games.resourceForApp app
+api.users.resourceForApp app
 
 app.get '*', routes.index
 

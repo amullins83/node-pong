@@ -1,15 +1,17 @@
-form.modal-header(ng-submit="signIn()")
-    h3 Sign In
-    .modal-body
-        .row-fluid
-            .span3 Email address:
-            .span3
-                input(type="email", name="email", ng-model="email")
-        .row-fluid
-            .span3 Password:
-            .span3
-                input(type="password", name="password", ng-model="password")
-    .modal-footer
-        .row
-            button.btn(ng-click="close(false)") Close
-            input.btn.btn-primary(type="submit", value="Sign In") 
+form.modal(ng-submit="signIn()")
+    .modal-dialog
+        .modal-content
+            .modal-header
+                h3 Sign In
+            .modal-body
+                .row-fluid
+                    .span3 Email address:
+                    .span3
+                        input(type="email", name="email", ng-model="email")
+                .row-fluid
+                    .span3 Password:
+                    .span3
+                        input(type="password", name="password", ng-model="password")
+        .modal-footer
+            a.btn(ng-click="close(false)", href="") Close
+            input.btn.btn-primary.btn-default(type="submit", value="Sign In", default=true) 

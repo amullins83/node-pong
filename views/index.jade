@@ -11,15 +11,8 @@ block body
           li
             a(href='todo') Todo
           li
-            -if(!user)
-              button.btn.btn-primary(type="button", ng-click="openSignIn()") Sign In
-            -else
-              a(href="/logout", ng-click="logOut()") Sign Out
-          -if(user) {
-          li
-            a(href='/') 
-              =" Welcome " + user.email
-          -}
+            button.btn.btn-primary(type="button", ng-click="signInOutButton()") {{ signInOutText }}
+        p(ng-show="!!user").navbar-text Welcome, {{ user.email }}
   .container-fluid
     div(ng-controller='AppCtrl')
       div(ng-view)

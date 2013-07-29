@@ -2,23 +2,37 @@
 
 class DialogCtrl
 
-    constructor: (@$scope, @$http, @$dialog)->
+    constructor: (@$scope, @$http, @$dialog, User)->
         @$scope.opts =
             templateUrl: 'modal/signIn'
             controller:  SignInCtrl
 
+        @$scope.user = User.query()[0]
+        @$scope.logOutText = "Log Out"
+        @$scope.signInText = "Sign In"
+
+        @$scope.signInOutText = if @$scope.user? @$scope.logOutText else @$scope.signInText
+
         @$scope.openSignIn = =>
             d = @$dialog.dialog @$scope.opts
             d.open().then (result)=>
-                @$scope.didSignIn = result?
-                @$scope.user = result
-                console.log result
+                if result? and result.email? 
+                    @$scope.didSignIn = true
+                    @$scope.signInOutText = "Log Out"
+                    @$scope.user = result
 
         @$scope.logOut = =>
             @$http.delete("./logout").success (data, status, headers, config)=>
+                @$scope.signInOutText = "Sign In"
                 @$scope.user = null
 
-    @$inject: ['$scope', '$http', '$dialog']
+        @$scope.signInOutButton = =>
+            unless @$scope.user?
+                return @$scope.openSignIn()
+            else
+                return @$scope.logOut()
+
+    @$inject: ['$scope', '$http', '$dialog', 'User']
 
 
 class AppCtrl
