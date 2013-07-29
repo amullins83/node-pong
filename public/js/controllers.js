@@ -4,30 +4,40 @@ var AppCtrl, DialogCtrl, GameCtrl, SignInCtrl, TodoCtrl, app,
 
 DialogCtrl = (function() {
   function DialogCtrl($scope, $http, $dialog, User) {
-    var _base,
-      _this = this;
+    var _this = this;
     this.$scope = $scope;
     this.$http = $http;
     this.$dialog = $dialog;
-    this.$scope.user = User.query()[0];
+    this.$scope.opts = {
+      templateUrl: 'modal/signIn',
+      controller: SignInCtrl
+    };
+    this.$scope.users = User.query();
+    this.$scope.$watch("users.length", function() {
+      return _this.$scope.user = _this.$scope.users[0];
+    });
     this.$scope.logOutText = "Log Out";
     this.$scope.signInText = "Sign In";
-    this.$scope.signInOutText = (typeof (_base = this.$scope).user === "function" ? _base.user(this.$scope.logOutText) : void 0) ? void 0 : this.$scope.signInText;
+    this.$scope.signInOutText = function() {
+      if (_this.$scope.user != null) {
+        return _this.$scope.logOutText;
+      } else {
+        return _this.$scope.signInText;
+      }
+    };
     this.$scope.openSignIn = function() {
       var d;
       d = _this.$dialog.dialog();
       return d.open('/modal/signIn', 'SignInCtrl').then(function(result) {
         if ((result != null) && (result.email != null)) {
           _this.$scope.didSignIn = true;
-          _this.$scope.signInOutText = "Log Out";
-          return _this.$scope.user = result;
+          return _this.$scope.users = User.query();
         }
       });
     };
     this.$scope.logOut = function() {
-      return _this.$http["delete"]("/logout").success(function(data, status, headers, config) {
-        _this.$scope.signInOutText = "Sign In";
-        return _this.$scope.user = null;
+      return _this.$http["delete"]("./logout").success(function(data, status, headers, config) {
+        return _this.$scope.users = User.query();
       });
     };
     this.$scope.signInOutButton = function() {
@@ -87,7 +97,7 @@ GameCtrl = (function() {
 
   GameCtrl.prototype.padOffset = 20;
 
-  function GameCtrl($scope, $http, $timeout, Game, Pad, Ball, HitDetector) {
+  function GameCtrl($scope, $http, $timeout, Game, User, Pad, Ball, HitDetector) {
     var _this = this;
     this.$scope = $scope;
     this.$http = $http;
@@ -103,6 +113,10 @@ GameCtrl = (function() {
     this.updateLater = __bind(this.updateLater, this);
     this.$scope.games = [];
     this.$scope.feedback = [];
+    this.$scope.users = User.query();
+    this.$scope.$watch("users.length", function() {
+      return _this.$scope.user = _this.$scope.users[0];
+    });
     this.$scope.problems = [];
     this.$scope.score = [0, 0];
     this.$scope.pad1 = new Pad("pad1", this.padOffset, (this.height - this.padHeight) / 2, this.padWidth, this.padHeight, "w", "s");
@@ -234,7 +248,7 @@ GameCtrl = (function() {
     };
   };
 
-  GameCtrl.$inject = ['$scope', '$http', '$timeout', 'Game', 'Pad', 'Ball', 'HitDetector'];
+  GameCtrl.$inject = ['$scope', '$http', '$timeout', 'Game', 'User', 'Pad', 'Ball', 'HitDetector'];
 
   return GameCtrl;
 
