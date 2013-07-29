@@ -3,10 +3,6 @@
 class DialogCtrl
 
     constructor: (@$scope, @$http, @$dialog, User)->
-        @$scope.opts =
-            templateUrl: 'modal/signIn'
-            controller:  SignInCtrl
-
         @$scope.user = User.query()[0]
         @$scope.logOutText = "Log Out"
         @$scope.signInText = "Sign In"
@@ -14,15 +10,15 @@ class DialogCtrl
         @$scope.signInOutText = if @$scope.user? @$scope.logOutText else @$scope.signInText
 
         @$scope.openSignIn = =>
-            d = @$dialog.dialog @$scope.opts
-            d.open().then (result)=>
+            d = @$dialog.dialog()
+            d.open('/modal/signIn', 'SignInCtrl').then (result)=>
                 if result? and result.email? 
                     @$scope.didSignIn = true
                     @$scope.signInOutText = "Log Out"
                     @$scope.user = result
 
         @$scope.logOut = =>
-            @$http.delete("./logout").success (data, status, headers, config)=>
+            @$http.delete("/logout").success (data, status, headers, config)=>
                 @$scope.signInOutText = "Sign In"
                 @$scope.user = null
 
@@ -175,10 +171,9 @@ class TodoCtrl
     @$inject: ['$scope', '$http', 'Todo']
 
 class SignInCtrl
-    constructor: (@$scope, @$http, User, @dialog)->
-        @$scope.user = "Player 1"
+    constructor: (@$scope, @$http, @$dialog)->
         @$scope.close = (result)=>
-            @dialog.close result
+            @$dialog.close result
 
         @$scope.signIn = =>
             postData =
@@ -186,11 +181,17 @@ class SignInCtrl
                 password: @$scope.password
 
             @$http.post("./login", postData).success( (data, status, headers, config)=>
-                @$scope.user = data
-                @dialog.close data
+                @$dialog.close data
             ).error (data, status, headers, config)=>
-                @$scope.user = "Player 1"
-                @dialog.close false
+                @$dialog.close false
 
 
-    @$inject: ['$scope', '$http', 'User', 'dialog']
+    @$inject: ['$scope', '$http', '$dialog']
+
+app = angular.module('nodePong.controllers', [])
+
+app.controller "AppCtrl", AppCtrl
+app.controller "GameCtrl", GameCtrl
+app.controller "DialogCtrl", DialogCtrl
+app.controller "SignInCtrl", ["$scope", "$http", "$dialog", SignInCtrl]
+app.controller "TodoCtrl", TodoCtrl

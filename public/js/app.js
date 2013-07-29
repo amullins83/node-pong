@@ -1,5 +1,7 @@
 'use strict';
-angular.module('nodePong', ['nodePong.filters', 'nodePong.services', 'nodePong.directives', 'gameObjects', 'ui', 'ui.bootstrap', 'mongolab']).config([
+var app;
+
+app = angular.module('nodePong', ['nodePong.filters', 'nodePong.services', 'nodePong.directives', 'nodePong.controllers', 'gameObjects', 'ui', 'ui.bootstrap', 'ui.bootstrap.dialog', 'mongolab']).config([
   '$routeProvider', '$locationProvider', '$dialogProvider', function($routeProvider, $locationProvider, $dialogProvider) {
     $routeProvider.when('/game', {
       templateUrl: 'partial/1',
@@ -12,6 +14,10 @@ angular.module('nodePong', ['nodePong.filters', 'nodePong.services', 'nodePong.d
     $routeProvider.otherwise({
       redirectTo: '/game'
     });
-    return $locationProvider.html5Mode(true);
+    $locationProvider.html5Mode(true);
+    return $dialogProvider.options({
+      backdrop: false,
+      dialogFade: true
+    });
   }
 ]);

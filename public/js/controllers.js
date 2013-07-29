@@ -1,5 +1,5 @@
 'use strict';
-var AppCtrl, DialogCtrl, GameCtrl, SignInCtrl, TodoCtrl,
+var AppCtrl, DialogCtrl, GameCtrl, SignInCtrl, TodoCtrl, app,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 DialogCtrl = (function() {
@@ -9,18 +9,14 @@ DialogCtrl = (function() {
     this.$scope = $scope;
     this.$http = $http;
     this.$dialog = $dialog;
-    this.$scope.opts = {
-      templateUrl: 'modal/signIn',
-      controller: SignInCtrl
-    };
     this.$scope.user = User.query()[0];
     this.$scope.logOutText = "Log Out";
     this.$scope.signInText = "Sign In";
     this.$scope.signInOutText = (typeof (_base = this.$scope).user === "function" ? _base.user(this.$scope.logOutText) : void 0) ? void 0 : this.$scope.signInText;
     this.$scope.openSignIn = function() {
       var d;
-      d = _this.$dialog.dialog(_this.$scope.opts);
-      return d.open().then(function(result) {
+      d = _this.$dialog.dialog();
+      return d.open('/modal/signIn', 'SignInCtrl').then(function(result) {
         if ((result != null) && (result.email != null)) {
           _this.$scope.didSignIn = true;
           _this.$scope.signInOutText = "Log Out";
@@ -29,7 +25,7 @@ DialogCtrl = (function() {
       });
     };
     this.$scope.logOut = function() {
-      return _this.$http["delete"]("./logout").success(function(data, status, headers, config) {
+      return _this.$http["delete"]("/logout").success(function(data, status, headers, config) {
         _this.$scope.signInOutText = "Sign In";
         return _this.$scope.user = null;
       });
@@ -259,14 +255,13 @@ TodoCtrl = (function() {
 })();
 
 SignInCtrl = (function() {
-  function SignInCtrl($scope, $http, User, dialog) {
+  function SignInCtrl($scope, $http, $dialog) {
     var _this = this;
     this.$scope = $scope;
     this.$http = $http;
-    this.dialog = dialog;
-    this.$scope.user = "Player 1";
+    this.$dialog = $dialog;
     this.$scope.close = function(result) {
-      return _this.dialog.close(result);
+      return _this.$dialog.close(result);
     };
     this.$scope.signIn = function() {
       var postData;
@@ -275,17 +270,27 @@ SignInCtrl = (function() {
         password: _this.$scope.password
       };
       return _this.$http.post("./login", postData).success(function(data, status, headers, config) {
-        _this.$scope.user = data;
-        return _this.dialog.close(data);
+        return _this.$dialog.close(data);
       }).error(function(data, status, headers, config) {
-        _this.$scope.user = "Player 1";
-        return _this.dialog.close(false);
+        return _this.$dialog.close(false);
       });
     };
   }
 
-  SignInCtrl.$inject = ['$scope', '$http', 'User', 'dialog'];
+  SignInCtrl.$inject = ['$scope', '$http', '$dialog'];
 
   return SignInCtrl;
 
 })();
+
+app = angular.module('nodePong.controllers', []);
+
+app.controller("AppCtrl", AppCtrl);
+
+app.controller("GameCtrl", GameCtrl);
+
+app.controller("DialogCtrl", DialogCtrl);
+
+app.controller("SignInCtrl", ["$scope", "$http", "$dialog", SignInCtrl]);
+
+app.controller("TodoCtrl", TodoCtrl);
