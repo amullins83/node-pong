@@ -22,7 +22,7 @@ resource = (name, filterFunction, sortFunction)->
     name = pluralize name
 
     result =
-        name: name + "s"
+        name: name
 
         get: (req, res)->
             filter = filterFunction(req)
