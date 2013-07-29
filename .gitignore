@@ -233,3 +233,5 @@ node_modules/*
 other*.js
 other*.coffee
 *.sublime*
+public/bootstrap/css-old
+public/bootstrap/js-old
