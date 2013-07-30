@@ -11,14 +11,22 @@ renderJSON = (res)->
         else
             res.json objects
 
-resource = (name, filterFunction)->
+resource = (name, filterFunction, sortFunction)->
     name = name.toLowerCase()
     Name = name[0].toUpperCase() + name[1..]
     Model = models[Name]
+    pluralize = (word)->
+            return word + 's' unless word[word.length - 1].toLowerCase() in ['s', 'x', 'y']
+            return word[..-2] + 'ies' if word[word.length -1] == 'y'
+            return word + 'es'
+    name = pluralize name
+
     result =
-        name: name + "s"
+        name: name
+
         get: (req, res)->
             filter = filterFunction(req)
+            sort = sortFunction()
             console.dir filter
             if req.user?
                 findObject = {}
@@ -31,7 +39,7 @@ resource = (name, filterFunction)->
                     findObject = req.query
                 for key of filter
                     findObject[key] = filter[key]
-                Model.find(findObject).sort("startTime").exec renderJSON(res)
+                Model.find(findObject).sort(sort).exec renderJSON(res)
             else
                 return res.json {}
 
@@ -86,6 +94,8 @@ games = exports.games = resource "Game", (req)->
         return players: $all: [req.user._id]
     else
         return players: 'No user defined'
+, ->
+    return "startTime"
 
 # games = exports.games =        
 #         get: (req, res)->
@@ -121,7 +131,8 @@ users = exports.users = resource "User", (req)->
         return _id: req.user._id
     else
         return _id: 'No user defined'
-
+, ->
+    return "userName"
 # users = exports.users  =
 #         get: (req, res)->
 #             findObject = {}

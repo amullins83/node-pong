@@ -8,19 +8,8 @@ DialogCtrl = (function() {
     this.$scope = $scope;
     this.$http = $http;
     this.$scope.users = User.query();
-    this.$scope.$watch("users[0]", function() {
-      _this.$scope.user = _this.$scope.users[0];
-      if (_this.$scope.user != null) {
-        $("#signInOutButton").click(_this.$scope.logOut).data({
-          toggle: false
-        });
-        return $("#welcome").show();
-      } else {
-        $("#signInOutButton").unbind("click").data({
-          toggle: "modal"
-        });
-        return $("#welcome").hide();
-      }
+    this.$scope.$watch("users.length", function() {
+      return _this.$scope.user = _this.$scope.users[0];
     });
     this.$scope.logOutText = "Log Out";
     this.$scope.signInText = "Sign In";
@@ -32,26 +21,18 @@ DialogCtrl = (function() {
         return _this.$scope.signInText;
       }
     };
-    this.$scope.signIn = function() {
-      var postData;
-      postData = {
-        email: _this.$scope.email,
-        password: _this.$scope.password
-      };
-      return _this.$http.post("./login", postData).success(function(data, status, headers, config) {
-        _this.$scope.users = User.query();
-        _this.$scope.user = data[0];
-        return _this.$scope.close();
-      }).error(function(data, status, headers, config) {
-        _this.$scope.users = User.query();
-        if (_this.$scope.users.length) {
-          _this.$scope.user = _this.$scope.users[0];
+    this.$scope.openSignIn = function() {
+      var d;
+      d = _this.$dialog.dialog(_this.$scope.opts);
+      return d.open().then(function(result) {
+        if ((result != null) && (result.email != null)) {
+          _this.$scope.didSignIn = true;
+          return _this.$scope.users = User.query();
         }
-        return _this.$scope.close();
       });
     };
     this.$scope.logOut = function() {
-      return _this.$http["delete"]("/logout").success(function(data, status, headers, config) {
+      return _this.$http["delete"]("./logout").success(function(data, status, headers, config) {
         return _this.$scope.users = User.query();
       });
     };
@@ -108,7 +89,7 @@ GameCtrl = (function() {
 
   GameCtrl.prototype.padOffset = 20;
 
-  function GameCtrl($scope, $http, $timeout, User, Pad, Ball, HitDetector) {
+  function GameCtrl($scope, $http, $timeout, Game, User, Pad, Ball, HitDetector) {
     var _this = this;
     this.$scope = $scope;
     this.$http = $http;
@@ -122,10 +103,13 @@ GameCtrl = (function() {
     this.stop = __bind(this.stop, this);
     this.move = __bind(this.move, this);
     this.updateLater = __bind(this.updateLater, this);
+    this.$scope.games = [];
+    this.$scope.feedback = [];
     this.$scope.users = User.query();
-    this.$scope.$watch('users.length', function() {
+    this.$scope.$watch("users.length", function() {
       return _this.$scope.user = _this.$scope.users[0];
     });
+    this.$scope.problems = [];
     this.$scope.score = [0, 0];
     this.$scope.pad1 = new Pad("pad1", this.padOffset, (this.height - this.padHeight) / 2, this.padWidth, this.padHeight, "w", "s");
     this.$scope.pad2 = new Pad("pad2", this.width - this.padWidth - this.padOffset, (this.height - this.padHeight) / 2, this.padWidth, this.padHeight, "up", "down");
@@ -256,7 +240,7 @@ GameCtrl = (function() {
     };
   };
 
-  GameCtrl.$inject = ['$scope', '$http', '$timeout', 'User', 'Pad', 'Ball', 'HitDetector'];
+  GameCtrl.$inject = ['$scope', '$http', '$timeout', 'Game', 'User', 'Pad', 'Ball', 'HitDetector'];
 
   return GameCtrl;
 

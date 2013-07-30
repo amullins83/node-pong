@@ -2,7 +2,7 @@
 var app;
 
 app = angular.module('nodePong', ['nodePong.filters', 'nodePong.services', 'nodePong.directives', 'nodePong.controllers', 'gameObjects', 'ui', 'ui.bootstrap', 'ui.bootstrap.dialog', 'mongolab']).config([
-  '$routeProvider', '$locationProvider', '$dialogProvider', function($routeProvider, $locationProvider) {
+  '$routeProvider', '$locationProvider', '$dialogProvider', function($routeProvider, $locationProvider, $dialogProvider) {
     $routeProvider.when('/game', {
       templateUrl: 'partial/1',
       controller: GameCtrl
@@ -14,6 +14,9 @@ app = angular.module('nodePong', ['nodePong.filters', 'nodePong.services', 'node
     $routeProvider.otherwise({
       redirectTo: '/game'
     });
-    return $locationProvider.html5Mode(true);
+    $locationProvider.html5Mode(true);
+    return $dialogProvider.options({
+      dialogFade: true
+    });
   }
 ]);

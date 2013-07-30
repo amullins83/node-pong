@@ -4,14 +4,9 @@ class DialogCtrl
 
     constructor: (@$scope, @$http, User)->
         @$scope.users = User.query()
-        @$scope.$watch "users[0]", =>
+
+        @$scope.$watch "users.length", =>
             @$scope.user = @$scope.users[0]
-            if @$scope.user?
-                $("#signInOutButton").click(@$scope.logOut).data toggle:false
-                $("#welcome").show()
-            else
-                $("#signInOutButton").unbind("click").data toggle:"modal"
-                $("#welcome").hide()
 
         @$scope.logOutText = "Log Out"
         @$scope.signInText = "Sign In"
@@ -19,22 +14,15 @@ class DialogCtrl
         @$scope.signInOutText = =>
             if @$scope.user? @$scope.logOutText else @$scope.signInText
 
-        @$scope.signIn = =>
-            postData =
-                email: @$scope.email
-                password: @$scope.password
-
-            @$http.post("./login", postData).success( (data, status, headers, config)=>
-                @$scope.users = User.query()
-                @$scope.user = data[0]
-                @$scope.close()
-            ).error (data, status, headers, config)=>
-                @$scope.users = User.query()
-                @$scope.user = @$scope.users[0] if @$scope.users.length
-                @$scope.close()
+        @$scope.openSignIn = =>
+            d = @$dialog.dialog @$scope.opts
+            d.open().then (result)=>
+                if result? and result.email? 
+                    @$scope.didSignIn = true
+                    @$scope.users = User.query()
 
         @$scope.logOut = =>
-            @$http.delete("/logout").success (data, status, headers, config)=>
+            @$http.delete("./logout").success (data, status, headers, config)=>
                 @$scope.users = User.query()
 
         @$scope.close = =>
@@ -69,11 +57,16 @@ class GameCtrl
     padWidth: 10
     padOffset: 20
 
-    constructor: (@$scope, @$http, @$timeout, User, Pad, Ball, HitDetector)->
+    constructor: (@$scope, @$http, @$timeout, Game, User, Pad, Ball, HitDetector)->
+        @$scope.games = []
+        @$scope.feedback = []
+        #@$scope.games = Game.query()
         @$scope.users = User.query()
 
-        @$scope.$watch 'users.length', =>
+        @$scope.$watch "users.length", =>
             @$scope.user = @$scope.users[0]
+
+        @$scope.problems = []
 
         @$scope.score = [0, 0]
         @$scope.pad1 = new Pad "pad1", @padOffset, (@height - @padHeight) / 2, @padWidth, @padHeight, "w", "s"
@@ -160,8 +153,7 @@ class GameCtrl
             top: @$scope.ball.pos.y
             left: @$scope.ball.pos.x
 
-    @$inject: ['$scope', '$http', '$timeout','User', 'Pad', 'Ball', 'HitDetector']
-
+    @$inject: ['$scope', '$http', '$timeout','Game', 'User', 'Pad', 'Ball', 'HitDetector']
 
 class TodoCtrl
     constructor: (@$scope, @$http, Todo)->

@@ -21,18 +21,17 @@ app.configure ->
     app.set 'view engine', 'jade'
     app.use express.logger()
     app.use express.cookieParser()
-    app.use express.bodyParser keepExtensions:true
+    app.use express.bodyParser keepExtensions: true
     app.use express.methodOverride()
     app.use express.static(__dirname + '/public')
     app.use express.session
         secret: process.env.SESSION_SECRET
-
     app.use passport.initialize()
     app.use passport.session()
     app.use app.router
 
 app.configure 'development', ->
-    app.use express.errorHandler({ dumpExceptions: true, showStack: true })
+    app.use express.errorHandler dumpExceptions: true, showStack: true
 
 app.configure 'production', ->
     app.use express.errorHandler()

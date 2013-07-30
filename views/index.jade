@@ -1,38 +1,22 @@
 extends layout
 
 block body
-    .container-fluid(ng-controller="DialogCtrl")
-        form.navbar.navbar-fixed-top.navbar-form.pull-left
-            a.navbar-brand(href='#') Node Pong
-            ul.nav.navbar-nav
-                li
-                    a(href='game') Game
-                li
-                    a(href='todo') Todo
-            p
-                a#signInOutButton.btn.btn-primary.navbar-btn(data-toggle="modal", type="button", href="#signInForm") {{ signInOutText() }}
-            p#welcome(ng-show="!!user").navbar-text Welcome, {{ user.userName }}
-            
-        .container-fluid
+    .container-fluid
+        form.navbar.navbar-fixed-top.navbar-form(ng-controller="DialogCtrl")
+            .navbar-inner
+                .container-fluid
+                    a.brand(href='#') Node Pong
+                    ul.nav
+                        li
+                            a(href='game') Game
+                        li
+                            a(href='todo') Todo
+                        li
+                            button.btn.btn-primary(type="button", ng-click="signInOutButton()") {{ signInOutText() }}
+                    p(ng-show="!!user").navbar-text Welcome, {{ user.userName }}
+    .container-fluid
+        div(ng-controller='AppCtrl')
             div(ng-view)
-        .modal.fade#signInForm
-            .modal-dialog
-                form.modal-content(ng-submit="signIn()")
-                    .modal-header
-                        h3 Sign In
-                    .modal-body
-                        .row-fluid
-                            .span3 Email address:
-                            .span3
-                                input(type="email", name="email", ng-model="email")
-                        .row-fluid
-                            .span3 Password:
-                            .span3
-                                input(type="password", name="password", ng-model="password")
-                    .modal-footer
-                        a.btn.btn-default(ng-click="close()") Close
-                        input.btn.btn-primary(type="submit", value="Sign In") 
-
 
     script(src="//code.jquery.com/jquery-latest.min.js").
     script(src='//s3.amazonaws.com/node-pong/assets/js/application.js').
