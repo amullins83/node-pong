@@ -1,11 +1,21 @@
 'use strict'
 
+class SignInCtrl
+    constructor: (@$scope, @dialog)->            
+        @$scope.close = (data)=>
+            @dialog.close data
+
+        @$scope.signIn = =>
+            @dialog.close
+                email: @$scope.email
+                password: @$scope.password
+
 class DialogCtrl
 
     constructor: (@$scope, @$http, @$dialog, User)->
         @$scope.opts =
             templateUrl: 'modal/signIn'
-            controller:  SignInCtrl
+            controller: SignInCtrl
 
         @$scope.users = User.query()
 
@@ -66,11 +76,8 @@ class GameCtrl
     padWidth: 10
     padOffset: 20
 
-    constructor: (@$scope, @$http, @$timeout, Game, User, Pad, Ball, HitDetector)->
-        @$scope.games = []
-        @$scope.feedback = []
-        #@$scope.games = Game.query()
-        @$scope.users = User.query()
+    constructor: (@$scope, @$http, @$timeout, Game, @User, Pad, Ball, HitDetector)->
+        @$scope.users = @User.query()
         @$scope.$watch "users.length", =>
             @$scope.user = @$scope.users[0]
 
@@ -127,7 +134,10 @@ class GameCtrl
         @$scope.score[i] += 1
         if @$scope.score[i] >= @scoreMax
             @$scope.status = "Player #{i+1} Wins"
-            @$scope.message = "Player #{i+1} Wins"
+            if i is 0 and @$scope.user?
+                @$scope.message = "#{@$scope.user.userName} Wins"
+            else
+                @$scope.message = @$scope.status
         @$scope.ball = new Ball (@width - @ballsize)/2, (@height - @ballsize)/2, @ballsize
 
     updateBall: =>
@@ -170,23 +180,3 @@ class TodoCtrl
         @$scope.todos = Todo.query()
        
     @$inject: ['$scope', '$http', 'Todo']
-
-class SignInCtrl
-    constructor: (@$scope, dialog)->            
-        @$scope.close = (data)=>
-            dialog.close data
-
-        @$scope.signIn = =>
-            dialog.close
-                email: @$scope.email
-                password: @$scope.password
-
-    @$inject: ['$scope']
-
-app = angular.module('nodePong.controllers', [])
-
-app.controller "AppCtrl", ["$scope", "$http", AppCtrl]
-app.controller "GameCtrl", ["$scope", "$http", "$timeout", "User", "Pad", "Ball", "HitDetector", GameCtrl]
-app.controller "DialogCtrl", ["$scope", "$http", "$dialog", "User", DialogCtrl]
-app.controller "TodoCtrl", ["$scope", "$http", TodoCtrl]
-app.controller "SignInCtrl", ["$scope", SignInCtrl]

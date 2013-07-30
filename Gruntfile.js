@@ -47,7 +47,6 @@ module.exports = function(grunt) {
                         './public/js/lib/angular-ui/angular-ui.min.js',
                         './public/js/lib/angular-ui/ui-bootstrap-tpls.min.js',
                         './public/js/lib/angular-ui/angular-ui-ieshiv.min.js',
-                        './public/bootstrap/js/bootstrap.min.js',
                         './public/js/app.js',
                         './public/js/controllers.js',
                         './public/js/copyTableToDatabase.js',

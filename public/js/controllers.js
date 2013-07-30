@@ -1,6 +1,26 @@
 'use strict';
-var AppCtrl, DialogCtrl, GameCtrl, SignInCtrl, TodoCtrl, app,
+var AppCtrl, DialogCtrl, GameCtrl, SignInCtrl, TodoCtrl,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+SignInCtrl = (function() {
+  function SignInCtrl($scope, dialog) {
+    var _this = this;
+    this.$scope = $scope;
+    this.dialog = dialog;
+    this.$scope.close = function(data) {
+      return _this.dialog.close(data);
+    };
+    this.$scope.signIn = function() {
+      return _this.dialog.close({
+        email: _this.$scope.email,
+        password: _this.$scope.password
+      });
+    };
+  }
+
+  return SignInCtrl;
+
+})();
 
 DialogCtrl = (function() {
   function DialogCtrl($scope, $http, $dialog, User) {
@@ -8,19 +28,11 @@ DialogCtrl = (function() {
     this.$scope = $scope;
     this.$http = $http;
     this.$dialog = $dialog;
-<<<<<<< HEAD
     this.$scope.opts = {
       templateUrl: 'modal/signIn',
       controller: SignInCtrl
     };
     this.$scope.users = User.query();
-=======
-    this.$scope.users = User.query();
-    this.$scope.opts = {
-      templateUrl: "modal/signIn",
-      controller: "SignInCtrl"
-    };
->>>>>>> 54b4970b481fe1f1ebc4ef5e86a0b726e0488a38
     this.$scope.$watch("users.length", function() {
       return _this.$scope.user = _this.$scope.users[0];
     });
@@ -35,18 +47,9 @@ DialogCtrl = (function() {
     };
     this.$scope.openSignIn = function() {
       var d;
-<<<<<<< HEAD
-      d = _this.$dialog.dialog();
-      return d.open('/modal/signIn', 'SignInCtrl').then(function(result) {
-        if ((result != null) && (result.email != null)) {
-          _this.$scope.didSignIn = true;
-          return _this.$scope.users = User.query();
-        }
-=======
       d = _this.$dialog.dialog(_this.$scope.opts);
       return d.open().then(function(result) {
         return _this.$scope.doSignIn(result);
->>>>>>> 54b4970b481fe1f1ebc4ef5e86a0b726e0488a38
       });
     };
     this.$scope.logOut = function() {
@@ -121,6 +124,7 @@ GameCtrl = (function() {
     this.$scope = $scope;
     this.$http = $http;
     this.$timeout = $timeout;
+    this.User = User;
     this.redraw = __bind(this.redraw, this);
     this.updatePads = __bind(this.updatePads, this);
     this.updateBall = __bind(this.updateBall, this);
@@ -130,9 +134,7 @@ GameCtrl = (function() {
     this.stop = __bind(this.stop, this);
     this.move = __bind(this.move, this);
     this.updateLater = __bind(this.updateLater, this);
-    this.$scope.games = [];
-    this.$scope.feedback = [];
-    this.$scope.users = User.query();
+    this.$scope.users = this.User.query();
     this.$scope.$watch("users.length", function() {
       return _this.$scope.user = _this.$scope.users[0];
     });
@@ -219,7 +221,11 @@ GameCtrl = (function() {
     this.$scope.score[i] += 1;
     if (this.$scope.score[i] >= this.scoreMax) {
       this.$scope.status = "Player " + (i + 1) + " Wins";
-      this.$scope.message = "Player " + (i + 1) + " Wins";
+      if (i === 0 && (this.$scope.user != null)) {
+        this.$scope.message = "" + this.$scope.user.userName + " Wins";
+      } else {
+        this.$scope.message = this.$scope.status;
+      }
     }
     return this.$scope.ball = new Ball((this.width - this.ballsize) / 2, (this.height - this.ballsize) / 2, this.ballsize);
   };
@@ -286,36 +292,3 @@ TodoCtrl = (function() {
   return TodoCtrl;
 
 })();
-
-SignInCtrl = (function() {
-  function SignInCtrl($scope, dialog) {
-    var _this = this;
-    this.$scope = $scope;
-    this.$scope.close = function(data) {
-      return dialog.close(data);
-    };
-    this.$scope.signIn = function() {
-      return dialog.close({
-        email: _this.$scope.email,
-        password: _this.$scope.password
-      });
-    };
-  }
-
-  SignInCtrl.$inject = ['$scope'];
-
-  return SignInCtrl;
-
-})();
-
-app = angular.module('nodePong.controllers', []);
-
-app.controller("AppCtrl", ["$scope", "$http", AppCtrl]);
-
-app.controller("GameCtrl", ["$scope", "$http", "$timeout", "User", "Pad", "Ball", "HitDetector", GameCtrl]);
-
-app.controller("DialogCtrl", ["$scope", "$http", "$dialog", "User", DialogCtrl]);
-
-app.controller("TodoCtrl", ["$scope", "$http", TodoCtrl]);
-
-app.controller("SignInCtrl", ["$scope", SignInCtrl]);

@@ -1,3 +1,6 @@
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none; }
+
 p.row-fluid {
   text-align: center; }
 
@@ -11,13 +14,12 @@ p.row-fluid {
   font-family: "Helvetica Neue";
   font-size: 72px;
   width: 450px;
-  height: 100px;
   margin-right: auto;
   margin-bottom: 0;
   margin-left: auto;
   margin-top: -200px;
   color: blue;
-  padding: 0 20px 0 20px;
+  padding: 40px 20px 40px 20px;
   box-shadow: 0 3px 10px black; }
 
 .field {

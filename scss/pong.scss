@@ -14,6 +14,10 @@ $scoreOffsetY: 50px;
 $scoreHeight: $gameHeight / 2;
 $scoreWidth: $gameWidth * 3 / 4;
 
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none;
+}
+
 p.row-fluid {
   text: {
     align: center;
@@ -36,7 +40,6 @@ p.row-fluid {
     size: 72px;
   }
   width: 450px;
-  height: 100px;
   margin: {
     right: auto;
     bottom: 0;
@@ -44,7 +47,7 @@ p.row-fluid {
     top: -$gameHeight/2;
   }
   color: blue;
-  padding: 0 20px 0 20px;
+  padding: 40px 20px 40px 20px;
   box-shadow: 0 3px 10px black;
 }
 
