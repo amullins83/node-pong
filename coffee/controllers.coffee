@@ -2,33 +2,45 @@
 
 class DialogCtrl
 
-    constructor: (@$scope, @$http, @$dialog, User)->
-        @$scope.user = User.query()[0]
+    constructor: (@$scope, @$http, User)->
+        @$scope.users = User.query()
+        @$scope.$watch "users[0]", =>
+            @$scope.user = @$scope.users[0]
+            if @$scope.user?
+                $("#signInOutButton").click(@$scope.logOut).data toggle:false
+                $("#welcome").show()
+            else
+                $("#signInOutButton").unbind("click").data toggle:"modal"
+                $("#welcome").hide()
+
         @$scope.logOutText = "Log Out"
         @$scope.signInText = "Sign In"
 
-        @$scope.signInOutText = if @$scope.user? @$scope.logOutText else @$scope.signInText
+        @$scope.signInOutText = =>
+            if @$scope.user? @$scope.logOutText else @$scope.signInText
 
-        @$scope.openSignIn = =>
-            d = @$dialog.dialog()
-            d.open('/modal/signIn', 'SignInCtrl').then (result)=>
-                if result? and result.email? 
-                    @$scope.didSignIn = true
-                    @$scope.signInOutText = "Log Out"
-                    @$scope.user = result
+        @$scope.signIn = =>
+            postData =
+                email: @$scope.email
+                password: @$scope.password
+
+            @$http.post("./login", postData).success( (data, status, headers, config)=>
+                @$scope.users = User.query()
+                @$scope.user = data[0]
+                @$scope.close()
+            ).error (data, status, headers, config)=>
+                @$scope.users = User.query()
+                @$scope.user = @$scope.users[0] if @$scope.users.length
+                @$scope.close()
 
         @$scope.logOut = =>
             @$http.delete("/logout").success (data, status, headers, config)=>
-                @$scope.signInOutText = "Sign In"
-                @$scope.user = null
+                @$scope.users = User.query()
 
-        @$scope.signInOutButton = =>
-            unless @$scope.user?
-                return @$scope.openSignIn()
-            else
-                return @$scope.logOut()
+        @$scope.close = =>
+            $("#signInForm").modal "hide"
 
-    @$inject: ['$scope', '$http', '$dialog', 'User']
+    @$inject: ['$scope', '$http', 'User']
 
 
 class AppCtrl
@@ -57,30 +69,18 @@ class GameCtrl
     padWidth: 10
     padOffset: 20
 
-    constructor: (@$scope, @$http, @$timeout, Game, Pad, Ball, HitDetector)->
-        @$scope.games = []
-        @$scope.feedback = []
-        #@$scope.games = Game.query()
-        @$scope.problems = []
+    constructor: (@$scope, @$http, @$timeout, User, Pad, Ball, HitDetector)->
+        @$scope.users = User.query()
+
+        @$scope.$watch 'users.length', =>
+            @$scope.user = @$scope.users[0]
 
         @$scope.score = [0, 0]
-
-        #@$scope.$watch "selectedGameId", =>
-        #    @$scope.selectedGame = Game.get( {id: @$scope.selectedGameId}, (Game)=>
-        #        @$scope.score = Game.score
-        #    ) if @$scope.selectedGameId?        
-        
-
-
         @$scope.pad1 = new Pad "pad1", @padOffset, (@height - @padHeight) / 2, @padWidth, @padHeight, "w", "s"
         @$scope.pad2 = new Pad "pad2", (@width - @padWidth - @padOffset), (@height - @padHeight) / 2, @padWidth, @padHeight, "up", "down"
-
         @$scope.pads = [@$scope.pad1, @$scope.pad2]
-
         @$scope.ball = new Ball (@width - @ballsize)/2, (@height - @ballsize)/2, @ballsize
-
         @$scope.hitDetect = new HitDetector(@width, @height)
-
         @$scope.status = "Running"
 
         @$scope.move = (key)=>
@@ -160,7 +160,7 @@ class GameCtrl
             top: @$scope.ball.pos.y
             left: @$scope.ball.pos.x
 
-    @$inject: ['$scope', '$http', '$timeout','Game', 'Pad', 'Ball', 'HitDetector']
+    @$inject: ['$scope', '$http', '$timeout','User', 'Pad', 'Ball', 'HitDetector']
 
 
 class TodoCtrl
@@ -170,28 +170,10 @@ class TodoCtrl
        
     @$inject: ['$scope', '$http', 'Todo']
 
-class SignInCtrl
-    constructor: (@$scope, @$http, @$dialog)->
-        @$scope.close = (result)=>
-            @$dialog.close result
-
-        @$scope.signIn = =>
-            postData =
-                email: @$scope.email
-                password: @$scope.password
-
-            @$http.post("./login", postData).success( (data, status, headers, config)=>
-                @$dialog.close data
-            ).error (data, status, headers, config)=>
-                @$dialog.close false
-
-
-    @$inject: ['$scope', '$http', '$dialog']
 
 app = angular.module('nodePong.controllers', [])
 
-app.controller "AppCtrl", AppCtrl
-app.controller "GameCtrl", GameCtrl
-app.controller "DialogCtrl", DialogCtrl
-app.controller "SignInCtrl", ["$scope", "$http", "$dialog", SignInCtrl]
-app.controller "TodoCtrl", TodoCtrl
+app.controller "AppCtrl", ["$scope", "$http", AppCtrl]
+app.controller "GameCtrl", ["$scope", "$http", "$timeout", "User", "Pad", "Ball", "HitDetector", GameCtrl]
+app.controller "DialogCtrl", ["$scope", "$http", "User", DialogCtrl]
+app.controller "TodoCtrl", ["$scope", "$http", TodoCtrl]

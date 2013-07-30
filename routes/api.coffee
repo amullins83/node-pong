@@ -16,7 +16,7 @@ resource = (name, filterFunction)->
     Name = name[0].toUpperCase() + name[1..]
     Model = models[Name]
     result =
-        name: name
+        name: name + "s"
         get: (req, res)->
             filter = filterFunction(req)
             console.dir filter
