@@ -11,6 +11,7 @@ store = new SessionStore
 passport = require 'passport'
 
 LocalStrategy = require('passport-local').Strategy
+FBStrategy = require('passport-facebook').Strategy
 
 app = module.exports = express()
 

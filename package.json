@@ -11,6 +11,7 @@
     "jade": ">= 0.0.1",
     "oauth": ">= 0.0.1",
     "mongoose": ">= 0.0.1",
+    "session-mongoose": "*",
     "coffee-script": ">= 1.6.2",
     "bcrypt": "*",
     "knox": "*",
