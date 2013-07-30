@@ -70,6 +70,31 @@ passport.use new LocalStrategy {usernameField:"email"}, (email, password, done)-
                 console.log "Password mismatched"
                 return done null, false
 
+passwordGen = (number)->
+    number = 8 unless number? and number > 8
+    symbols = "-_#$%^&+=?!"
+    letters = "abcdefghijklmnopqrstuvwxyz"
+    LETTERS = letters.toUpperCase()
+    numbers = (String(i) for i in [0..9]).join ""
+    chars = [symbols, letters, LETTERS, numbers].join ""
+    len = chars.length
+    password = ""
+    for i in [0...number]
+        password += chars[Math.floor Math.random()*len]
+    return password
+
+passport.use new FBStrategy
+    clientID: process.env.FB_KEY
+    clientSecret: process.env.FB_SECRET
+    callbackURL: "auth/facebook/callback"
+    profileFields: ["id", "displayName", "photos", "email"]
+, (accessToken, refreshToken, profile, done)->
+    User.findOrCreate
+        facebookId: profile.id
+        email: profile.email
+    , (err, user)->
+        done(err, user)
+
 # Routes
 #     Normal
 app.get '/', routes.index
@@ -92,7 +117,27 @@ app.get '*', routes.index
 app.post "/login", (req, res, next)->
     passport.authenticate("local", (err, user, info)-> 
         if err
-            console.dir error
+            console.dir err
+            return next err
+
+        unless user
+            req.session.messages = [info.message]
+            return res.json {}
+
+        req.logIn user, (err)->
+            if err
+                console.dir err
+                return next err
+            res.json req.user
+    )(req, res, next)
+
+app.get "/auth/facebook",
+    passport.authenticate 'facebook'
+
+app.get "/auth/facebook/callback", (req, res, next)->
+    passport.authenticate('facebook', (err, user, info)->
+        if err
+            console.dir err
             return next err
 
         unless user
