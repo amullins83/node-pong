@@ -1,13 +1,12 @@
-form.modal-content(ng-submit="signIn()")
-    .modal-header
-        h3 Sign In
-    .modal-body
-        .row-fluid
-            .span3 Email address:
-            input.span5(type="email", name="email", ng-model="email")
-        .row-fluid
-            .span3 Password:
-            input.span5(type="password", name="password", ng-model="password")
-    .modal-footer
-        a.btn.btn-default(ng-click="close()") Close
-        input.btn.btn-primary(type="submit", value="Sign In") 
+.modal-header
+    h3 Sign In
+.modal-body
+    .row-fluid
+        .span3 Email address:
+        input.span5(type="email", name="email", ng-model="email", on-keyup="signIn", keys="[13]")
+    .row-fluid
+        .span3 Password:
+        input.span5(type="password", name="password", ng-model="password", on-keyup="signIn", keys="[13]") 
+.modal-footer
+    a.btn.btn-default(ng-click="close()") Close
+    button.btn.btn-primary(ng-click="signIn()") Sign In
