@@ -62,11 +62,12 @@ module.exports = function(grunt) {
             },
             css: {
                 src: [
+
+                        './public/bootstrap/css/bootstrap-responsive.css',
+                        './public/bootstrap/css/bootstrap.css',
                         './public/css/angular-ui.min.css',
                         './public/css/app.css',
-                        './public/css/pong.css',
-                        './public/bootstrap/css/bootstrap-responsive.min.css',
-                        './public/bootstrap/css/bootstrap.min.css'
+                        './public/css/pong.css'
                 ],
                 dest: './dist/css/application.css'
             }
