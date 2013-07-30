@@ -4,10 +4,9 @@ express = require 'express'
 routes = require './routes'
 models = require './models'
 
-#SessionStore = require("session-mongoose")(express)
-#store = new SessionStore
-#    url: process.env.MONGOLAB_URI
-#    sweeper: false
+SessionStore = require("session-mongoose")(express)
+store = new SessionStore
+   url: process.env.MONGOLAB_URI
 
 passport = require 'passport'
 
@@ -25,6 +24,8 @@ app.configure ->
     app.use express.methodOverride()
     app.use express.static(__dirname + '/public')
     app.use express.session
+        store: store
+        cookie: maxAge: 12*60*60*1000
         secret: process.env.SESSION_SECRET
     app.use passport.initialize()
     app.use passport.session()
