@@ -227,6 +227,9 @@ _SpecRunner.html
 node_modules
 node_modules/*
 
+#bower
+components/
+
 #Mullins stuff
 .bashrc
 .zshrc
