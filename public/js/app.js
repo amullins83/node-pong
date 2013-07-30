@@ -16,7 +16,6 @@ app = angular.module('nodePong', ['nodePong.filters', 'nodePong.services', 'node
     });
     $locationProvider.html5Mode(true);
     return $dialogProvider.options({
-      backdrop: false,
       dialogFade: true
     });
   }

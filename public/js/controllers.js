@@ -8,11 +8,19 @@ DialogCtrl = (function() {
     this.$scope = $scope;
     this.$http = $http;
     this.$dialog = $dialog;
+<<<<<<< HEAD
     this.$scope.opts = {
       templateUrl: 'modal/signIn',
       controller: SignInCtrl
     };
     this.$scope.users = User.query();
+=======
+    this.$scope.users = User.query();
+    this.$scope.opts = {
+      templateUrl: "modal/signIn",
+      controller: "SignInCtrl"
+    };
+>>>>>>> 54b4970b481fe1f1ebc4ef5e86a0b726e0488a38
     this.$scope.$watch("users.length", function() {
       return _this.$scope.user = _this.$scope.users[0];
     });
@@ -27,12 +35,18 @@ DialogCtrl = (function() {
     };
     this.$scope.openSignIn = function() {
       var d;
+<<<<<<< HEAD
       d = _this.$dialog.dialog();
       return d.open('/modal/signIn', 'SignInCtrl').then(function(result) {
         if ((result != null) && (result.email != null)) {
           _this.$scope.didSignIn = true;
           return _this.$scope.users = User.query();
         }
+=======
+      d = _this.$dialog.dialog(_this.$scope.opts);
+      return d.open().then(function(result) {
+        return _this.$scope.doSignIn(result);
+>>>>>>> 54b4970b481fe1f1ebc4ef5e86a0b726e0488a38
       });
     };
     this.$scope.logOut = function() {
@@ -41,11 +55,16 @@ DialogCtrl = (function() {
       });
     };
     this.$scope.signInOutButton = function() {
-      if (_this.$scope.user == null) {
-        return _this.$scope.openSignIn();
-      } else {
+      if (_this.$scope.user != null) {
         return _this.$scope.logOut();
+      } else {
+        return _this.$scope.openSignIn();
       }
+    };
+    this.$scope.doSignIn = function(postData) {
+      return _this.$http.post("./login", postData).success(function(data) {
+        return _this.$scope.users = User.query();
+      });
     };
   }
 
@@ -269,29 +288,21 @@ TodoCtrl = (function() {
 })();
 
 SignInCtrl = (function() {
-  function SignInCtrl($scope, $http, $dialog) {
+  function SignInCtrl($scope, dialog) {
     var _this = this;
     this.$scope = $scope;
-    this.$http = $http;
-    this.$dialog = $dialog;
-    this.$scope.close = function(result) {
-      return _this.$dialog.close(result);
+    this.$scope.close = function(data) {
+      return dialog.close(data);
     };
     this.$scope.signIn = function() {
-      var postData;
-      postData = {
+      return dialog.close({
         email: _this.$scope.email,
         password: _this.$scope.password
-      };
-      return _this.$http.post("./login", postData).success(function(data, status, headers, config) {
-        return _this.$dialog.close(data);
-      }).error(function(data, status, headers, config) {
-        return _this.$dialog.close(false);
       });
     };
   }
 
-  SignInCtrl.$inject = ['$scope', '$http', '$dialog'];
+  SignInCtrl.$inject = ['$scope'];
 
   return SignInCtrl;
 
@@ -299,12 +310,12 @@ SignInCtrl = (function() {
 
 app = angular.module('nodePong.controllers', []);
 
-app.controller("AppCtrl", AppCtrl);
+app.controller("AppCtrl", ["$scope", "$http", AppCtrl]);
 
-app.controller("GameCtrl", GameCtrl);
+app.controller("GameCtrl", ["$scope", "$http", "$timeout", "User", "Pad", "Ball", "HitDetector", GameCtrl]);
 
-app.controller("DialogCtrl", DialogCtrl);
+app.controller("DialogCtrl", ["$scope", "$http", "$dialog", "User", DialogCtrl]);
 
-app.controller("SignInCtrl", ["$scope", "$http", "$dialog", SignInCtrl]);
+app.controller("TodoCtrl", ["$scope", "$http", TodoCtrl]);
 
-app.controller("TodoCtrl", TodoCtrl);
+app.controller("SignInCtrl", ["$scope", SignInCtrl]);

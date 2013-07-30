@@ -22,6 +22,5 @@ app = angular.module('nodePong', [
 		$routeProvider.otherwise({redirectTo: '/game'})
 		$locationProvider.html5Mode(true)
 		$dialogProvider.options
-			backdrop: false
 			dialogFade: true
 ]
