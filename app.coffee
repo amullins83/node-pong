@@ -88,12 +88,13 @@ passport.use new FBStrategy
     clientID: process.env.FB_KEY
     clientSecret: process.env.FB_SECRET
     callbackURL: "//#{process.env.HOST}/auth/facebook/callback"
-    profileFields: ["id", "displayName", "photos", "email"]
+    profileFields: ["id", "displayName", "photos"]
 , (accessToken, refreshToken, profile, done)->
     User.findOneAndUpdate
         facebookId: profile.id
     , 
         facebookId: profile.id
+        displayName: profile.displayName
     ,
         upsert: true
     , (err, user)->

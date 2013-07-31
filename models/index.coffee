@@ -75,6 +75,7 @@ Game = exports.Game = mongoose.model "Game", mongoose.Schema gameObject
 exports.userObject = userObject =
     firstName: type: String
     lastName: type: String
+    displayName: type: String
     userName: type: String
     email: type: String, required: true, index: unique: true
     password: type: String, required: true

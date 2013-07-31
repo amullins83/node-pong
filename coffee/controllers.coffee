@@ -21,6 +21,9 @@ class DialogCtrl
 
         @$scope.$watch "users.length", =>
             @$scope.user = @$scope.users[0]
+            if @$scope.user?
+                unless @$scope.user.displayName?
+                    @$scope.user.displayName = @$scope.user.userName
 
         @$scope.logOutText = "Log Out"
         @$scope.signInText = "Sign In"
@@ -80,6 +83,9 @@ class GameCtrl
         @$scope.users = @User.query()
         @$scope.$watch "users.length", =>
             @$scope.user = @$scope.users[0]
+            if @$scope.user?
+                unless @$scope.user.displayName?
+                    @$scope.user.displayName = @$scope.user.userName
 
         @$scope.problems = []
 
