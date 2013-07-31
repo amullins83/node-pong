@@ -112,7 +112,7 @@ app.get '/api/name', api.name
 api.games.resourceForApp app
 api.users.resourceForApp app
 
-app.get '*', routes.index
+
 
 #     Login
 app.post "/login", (req, res, next)->
@@ -177,6 +177,8 @@ app.get "/fbChannel", (req, res)->
     res.setHeader "Cache-Control", "max-age=#{oneYear}"
     res.setHeader "Expires",  dateformat(expireDate, "dddd, d mmmm yyyy H:MM:ss", true) + " GMT"
     res.end '<script src="//connect.facebook.net/en_US/all.js"></script>'
+
+app.get '*', routes.index
 
 # Start
 app.listen process.env.PORT, ->
