@@ -92,10 +92,8 @@ passport.use new FBStrategy
 , (accessToken, refreshToken, profile, done)->
     User.findOneAndUpdate
         facebookId: profile.id
-        email: profile.email
     , 
         facebookId: profile.id
-        email: profile.email
     ,
         upsert: true
     , (err, user)->
