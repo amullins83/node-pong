@@ -126,7 +126,7 @@ app.post "/login", (req, res, next)->
             return next err
 
         unless user
-            req.session.messages = [info.message]
+            req.session.messages = [info.message] if info?
             return res.json {}
 
         req.logIn user, (err)->
