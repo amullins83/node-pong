@@ -41,8 +41,8 @@ module.exports = function(grunt) {
             },
             js: {
                 src: [
-                        './public/js/facebook.js',
                         './public/js/lib/jquery/jquery.min.js',
+                        './public/js/facebook.js',
                         './public/js/lib/angular/angular.min.js',
                         './public/js/lib/angular/angular-resource.min.js',
                         './public/js/lib/angular/angular-sanitize.min.js',

@@ -1,26 +1,37 @@
 "use strict";
-var fbInitialize;
+var fbInitialize, updateStatusCallback;
 
-fbInitialize = function() {};
-
-window.fbAsyncInit = function() {
-  FB.init({
-    appId: process.env.FB_KEY,
-    channelUrl: "//node-pong.herokuapp.com/fbChannel",
-    status: true,
-    xfbml: true
-  });
-  return fbInitialize();
+updateStatusCallback = function(status) {
+  if (status.status === 'connected') {
+    return testAPI();
+  }
 };
 
-(function(d, s, id) {
-  var fjs, js;
-  fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) {
-    return;
-  }
-  js = d.createElement(s);
-  js.id = id;
-  js.src = "//connect.facebook.net/en_US/all.js";
-  return fjs.parentNode.insertBefore(js, fjs);
-})(document, 'script', 'facebook-jssdk');
+fbInitialize = function() {
+  FB.Event.subscribe('auth.authResponseChange', function(response) {
+    if (response.status === 'connected') {
+      return testAPI();
+    } else if (response.status === 'not_authorized') {
+      return console.log("This fb user has not authorized this app");
+    } else {
+      return console.log("This user is not logged in to FB");
+    }
+  });
+  return FB.getLoginStatus(updateStatusCallback);
+};
+
+$(document).ready(function() {
+  $.ajaxSetup({
+    cache: true
+  });
+  return $.getScript('//connect.facebook.net/en_US/all.js', function() {
+    FB.init({
+      appId: 483976228358350,
+      channelUrl: "//node-pong.herokuapp.com/fbChannel",
+      status: true,
+      cookie: true,
+      xfbml: true
+    });
+    return fbInitialize();
+  });
+});

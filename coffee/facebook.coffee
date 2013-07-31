@@ -1,21 +1,29 @@
 "use strict"
 
+updateStatusCallback = (status)->
+    testAPI() if status.status == 'connected'
+
 fbInitialize = ->
+    FB.Event.subscribe 'auth.authResponseChange', (response)->
+        if response.status == 'connected'
+            testAPI()
+        else if response.status == 'not_authorized'
+            console.log "This fb user has not authorized this app"
+        else
+            console.log "This user is not logged in to FB"
+        
+    FB.getLoginStatus(updateStatusCallback);
 
-window.fbAsyncInit = ->
-    FB.init 
-        appId: process.env.FB_KEY
-        channelUrl: "//node-pong.herokuapp.com/fbChannel"
-        status: true
-        xfbml: true
+$(document).ready ->
+    $.ajaxSetup
+        cache: true
 
-    fbInitialize()
+    $.getScript '//connect.facebook.net/en_US/all.js', ->
+        FB.init 
+            appId: 483976228358350
+            channelUrl: "//node-pong.herokuapp.com/fbChannel"
+            status: true
+            cookie: true
+            xfbml: true
 
-((d, s, id)->
-    fjs = d.getElementsByTagName(s)[0]
-    return if d.getElementById id
-    js = d.createElement s
-    js.id = id
-    js.src = "//connect.facebook.net/en_US/all.js"
-    fjs.parentNode.insertBefore(js, fjs)
-)(document, 'script', 'facebook-jssdk')
+        fbInitialize()
