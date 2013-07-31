@@ -3,6 +3,7 @@ connect = require 'connect'
 express = require 'express'
 routes = require './routes'
 models = require './models'
+dateformat = require 'dateformat'
 
 SessionStore = require("session-mongoose")(express)
 store = new SessionStore
@@ -164,6 +165,18 @@ app.delete "/logout", (req, res)->
 app.get "/logout", logout
 
 
+#FB Channel
+#    set an expiration date 1 year into the future.
+expireDate = new Date
+expireDate.setTime expireDate.getTime() + 365*24*60*60*1000
+#    set response headers to force long-term caching
+#    then send a script link as the content of the response.
+app.get "/fbChannel", (req, res)->
+    oneYear = 60*60*24*365
+    res.setHeader "Pragma", "public"
+    res.setHeader "Cache-Control", "max-age=#{oneYear}"
+    res.setHeader "Expires",  dateformat(expireDate, "dddd, d mmmm yyyy H:MM:ss", true) + " GMT"
+    res.end '<script src="//connect.facebook.net/en_US/all.js"></script>'
 
 # Start
 app.listen process.env.PORT, ->

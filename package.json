@@ -19,7 +19,8 @@
     "passport-local": "~0.1.6",
     "passport-facebook": "~0.1.5",
     "passport-twitter": "~0.1.5",
-    "connect": "~2.8.4"
+    "connect": "~2.8.4",
+    "dateformat": "~1.0.6-1.2.3"
   },
   "devDependencies": {
     "grunt": "*",

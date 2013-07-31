@@ -7,6 +7,9 @@
     .row-fluid
         .span3 Password:
         input.span5(type="password", name="password", ng-model="password", on-keyup="signIn", keys="[13]") 
+    p.row-fluid "OR"
+    .row-fluid
+        .fb-login-button(data-width="200")
 .modal-footer
     a.btn.btn-default(ng-click="close()") Close
     button.btn.btn-primary(ng-click="signIn()") Sign In
