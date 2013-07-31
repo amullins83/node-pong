@@ -90,9 +90,14 @@ passport.use new FBStrategy
     callbackURL: "//#{process.env.HOST}/auth/facebook/callback"
     profileFields: ["id", "displayName", "photos", "email"]
 , (accessToken, refreshToken, profile, done)->
-    User.findOrCreate
+    User.findOneAndModify
         facebookId: profile.id
         email: profile.email
+    , 
+        facebookId: profile.id
+        email: profile.email
+    ,
+        upsert: true
     , (err, user)->
         done(err, user)
 
