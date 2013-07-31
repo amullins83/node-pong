@@ -87,7 +87,7 @@ passwordGen = (number)->
 passport.use new FBStrategy
     clientID: process.env.FB_KEY
     clientSecret: process.env.FB_SECRET
-    callbackURL: "auth/facebook/callback"
+    callbackURL: "//#{process.env.HOST}/auth/facebook/callback"
     profileFields: ["id", "displayName", "photos", "email"]
 , (accessToken, refreshToken, profile, done)->
     User.findOrCreate
