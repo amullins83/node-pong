@@ -1,19 +1,3 @@
-"use strict"
-
-updateStatusCallback = (status)->
-    testAPI() if status.status == 'connected'
-
-fbInitialize = ->
-    FB.Event.subscribe 'auth.authResponseChange', (response)->
-        if response.status == 'connected'
-            testAPI()
-        else if response.status == 'not_authorized'
-            console.log "This fb user has not authorized this app"
-        else
-            console.log "This user is not logged in to FB"
-        
-    FB.getLoginStatus(updateStatusCallback);
-
 $(document).ready ->
     $.ajaxSetup
         cache: true
@@ -27,3 +11,23 @@ $(document).ready ->
             xfbml: true
 
         fbInitialize()
+
+testAPI = ->
+    console.log 'Welcome!  Fetching your information.... '
+    FB.api '/me', (response)->
+      console.log 'Good to see you, ' + response.name + '.'
+
+updateStatusCallback = (status)->
+    testAPI() if status.status == 'connected'
+
+fbInitialize = ->
+    console.log "Initializing FB"
+    FB.Event.subscribe 'auth.authResponseChange', (response)->
+        if response.status == 'connected'
+            testAPI()
+        else if response.status == 'not_authorized'
+            console.log "This fb user has not authorized this app"
+        else
+            console.log "This user is not logged in to FB"
+
+    FB.getLoginStatus updateStatusCallback
