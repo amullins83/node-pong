@@ -58,7 +58,7 @@ passport.use new LocalStrategy {usernameField:"email"}, (email, password, done)-
             return done err
         unless user
             console.log "No user found"
-            return done null, false
+            return done null, false, "No user found"
 
         user.comparePassword password, (err, match)->
             if err
@@ -67,10 +67,10 @@ passport.use new LocalStrategy {usernameField:"email"}, (email, password, done)-
 
             if match
                 console.log "Eureka!"
-                return done null, user
+                return done null, user, "Eureka!"
             else
                 console.log "Password mismatched"
-                return done null, false
+                return done null, false, "Password mismatched"
 
 passwordGen = (number)->
     number = 8 unless number? and number > 8
@@ -114,7 +114,7 @@ OAuthSetUser = (done, smUser)->
     (err, user)->
         done err if err
         if user
-            done null, user
+            done null, user, "Eureka!"
         else
             User.create
                 displayName: smUser.displayName
@@ -124,7 +124,7 @@ OAuthSetUser = (done, smUser)->
                 lastName: smUser.displayName.split(" ")[-1..][0]
                 password: passwordGen 12
                 socialMediaPersonae: [smUser._id]
-            , done(null, user)
+            , done null, user, "New user created from #{smUser.providerName}"
 
 # Routes
 #     Normal
