@@ -14,30 +14,6 @@ passport = require 'passport'
 LocalStrategy = require('passport-local').Strategy
 FBStrategy = require('passport-facebook').Strategy
 
-app = module.exports = express()
-
-# Configure
-app.configure ->
-    app.set 'views', __dirname + '/views'
-    app.set 'view engine', 'jade'
-    app.use express.logger()
-    app.use express.cookieParser()
-    app.use express.bodyParser keepExtensions: true
-    app.use express.methodOverride()
-    app.use express.static(__dirname + '/public')
-    app.use express.session
-        store: store
-        cookie: maxAge: 12*60*60*1000
-        secret: process.env.SESSION_SECRET
-    app.use passport.initialize()
-    app.use passport.session()
-    app.use app.router
-
-app.configure 'development', ->
-    app.use express.errorHandler dumpExceptions: true, showStack: true
-
-app.configure 'production', ->
-    app.use express.errorHandler()
 
 # Passport Setup
 
@@ -100,11 +76,38 @@ passport.use new FBStrategy
         providerName: "facebook"
     ,
         upsert: true
-    , getLocalUserFromsocialMediaUser done
+    , (err, socialMediaUser)->
+        console.log "back from searching for a socialMediaUser"
+        return done err if err
+        console.log "we have one, forwarding to the verify callback"
+        return done null, socialMediaUser
 
-getLocalUserFromsocialMediaUser = (done)->
-    (err, socialMediaUser)->
-        done err if err
+
+
+app = module.exports = express()
+
+# Configure
+app.configure ->
+    app.set 'views', __dirname + '/views'
+    app.set 'view engine', 'jade'
+    app.use express.logger()
+    app.use express.cookieParser()
+    app.use express.bodyParser keepExtensions: true
+    app.use express.methodOverride()
+    app.use express.static(__dirname + '/public')
+    app.use express.session
+        store: store
+        cookie: maxAge: 12*60*60*1000
+        secret: process.env.SESSION_SECRET
+    app.use passport.initialize()
+    app.use passport.session()
+    app.use app.router
+
+app.configure 'development', ->
+    app.use express.errorHandler dumpExceptions: true, showStack: true
+
+app.configure 'production', ->
+    app.use express.errorHandler()
 
 
 # Routes
