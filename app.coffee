@@ -45,12 +45,13 @@ passport.serializeUser (user, done)->
     done null, user.id
 
 User = models.User
+SocialMediaUser = models.SocialMediaUser
 
 passport.deserializeUser (id, done)->
     User.findById id, done
 
 passport.use new LocalStrategy {usernameField:"email"}, (email, password, done)->
-    console.log "Inside LocalStrategy(#{email}, #{password}, callback)"
+    console.log "Inside LocalStrategy(#{email}, #{password}, #{done})"
     User.findOne {email: email}, (err, user)->
         if err
             console.dir err
@@ -90,15 +91,40 @@ passport.use new FBStrategy
     callbackURL: "//#{process.env.HOST}/auth/facebook/callback"
     profileFields: ["id", "displayName", "photos"]
 , (accessToken, refreshToken, profile, done)->
-    User.findOneAndUpdate
-        facebookId: profile.id
+    SocialMediaUser.findOneAndUpdate
+        providerUserId: profile.id
+        providerName: "facebook"
     , 
-        facebookId: profile.id
+        providerUserId: profile.id
         displayName: profile.displayName
+        providerName: "facebook"
     ,
         upsert: true
-    , (err, user)->
-        done(err, user)
+    , getLocalUserFromSMUser done
+
+getLocalUserFromSMUser = (done)->
+    (err, smUser)->
+        done err if err
+        if smUser
+            User.findOne
+                socialMediaPersonae: "$all": [smUser._id]
+            , OAuthSetUser done, smUser
+
+OAuthSetUser = (done, smUser)->
+    (err, user)->
+        done err if err
+        if user
+            done null, user
+        else
+            User.create
+                displayName: smUser.displayName
+                email: "#{smUser.providerUserId}@#{smUser.providerName}.com"
+                userName: smUser.providerUserId
+                firstName: smUser.displayName.split(" ")[0]
+                lastName: smUser.displayName.split(" ")[-1..][0]
+                password: passwordGen 12
+                socialMediaPersonae: [smUser._id]
+            , done(null, user)
 
 # Routes
 #     Normal
@@ -146,7 +172,7 @@ app.get "/auth/facebook/callback", (req, res, next)->
             return next err
 
         unless user
-            req.session.messages = [info.message]
+            req.session.messages = [info.message] if info?
             return res.json {}
 
         req.logIn user, (err)->

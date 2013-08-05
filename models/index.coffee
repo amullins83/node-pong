@@ -32,8 +32,6 @@ else
     mongoose.connect process.env.MONGOLAB_URI
             
 
-Model = mongoose.model
-Schema = mongoose.Schema
 db = exports.db = mongoose.connection
     
     
@@ -81,7 +79,7 @@ exports.userObject = userObject =
     password: type: String, required: true
     creationDate: type: Date, index: true
     lastLogin: type: Date, default: new Date
-    socialMediaPersonae: [{type: Schema.ObjectId, ref: "SocialMediaUser"}]
+    socialMediaPersonae: [{type: mongoose.Schema.ObjectId, ref: "SocialMediaUser"}]
 
 userSchema = mongoose.Schema userObject
 
@@ -109,6 +107,17 @@ userSchema.methods.comparePassword = (candidatePassword, cb)->
 
 
 User = exports.User = mongoose.model "User", userSchema
+
+
+exports.socialMediaUserObject = socialMediaUserObject = 
+    providerName: type: String, required: true
+    providerUserId: type: String, required: true
+    displayName: type: String, required: true
+    user: type: mongoose.Schema.ObjectId, ref: "User"
+
+socialMediaUserSchema = exports.socialMediaUserSchema = mongoose.Schema socialMediaUserObject
+exports.SocialMediaUser = SocialMediaUser = mongoose.model "SocialMediaUser", socialMediaUserSchema
+
 
 db.once "open", ->
     console.log "Models Ready"
