@@ -58,7 +58,7 @@ passport.use new LocalStrategy {usernameField:"email"}, (email, password, done)-
             return done err
         unless user
             console.log "No user found"
-            return done null, false, "No user found"
+            return done null, false, message: "No user found"
 
         user.comparePassword password, (err, match)->
             if err
@@ -67,10 +67,10 @@ passport.use new LocalStrategy {usernameField:"email"}, (email, password, done)-
 
             if match
                 console.log "Eureka!"
-                return done null, user, "Eureka!"
+                return done null, user, message: "Eureka!"
             else
                 console.log "Password mismatched"
-                return done null, false, "Password mismatched"
+                return done null, false, message: "Password mismatched"
 
 passwordGen = (number)->
     number = 8 unless number? and number > 8
@@ -100,10 +100,10 @@ passport.use new FBStrategy
         providerName: "facebook"
     ,
         upsert: true
-    , getLocalUserFromSMUser done
+    , getLocalUserFromsocialMediaUser done
 
-getLocalUserFromSMUser = (done)->
-    (err, smUser)->
+getLocalUserFromsocialMediaUser = (done)->
+    (err, socialMediaUser)->
         done err if err
 
 
@@ -133,7 +133,7 @@ app.post "/login", (req, res, next)->
             return next err
 
         unless user
-            req.session.messages = [info.message] if info?
+            req.session.messages = [info.message] if info? and console.log info.message
             return res.json {}
 
         req.logIn user, (err)->
@@ -144,48 +144,61 @@ app.post "/login", (req, res, next)->
     )(req, res, next)
 
 app.get "/auth/facebook",
+    console.log 'Request received for /auth/facebook'
     passport.authenticate 'facebook'
 
 app.get "/auth/facebook/callback", (req, res, next)->
+    console.log "Request received for /auth/facebook/callback"
     passport.authenticate('facebook', (err, socialMediaUser, info)->
+        console.log "Verify callback"
+        console.log "Info says: #{info.message}"
         if err
             console.dir err
             return next err
 
         unless socialMediaUser
+            console.log 'Facebook not authorized'
             req.session.messages = [info.message] if info?
             return res.json {}
 
         if req.user?
+            console.log "User #{req.user.displayName} already logged in"
             User.findOne
                 _id: req.user._id
             , (err, user)->
                 next err if err
                 next null, false unless user?
+                console.log "User found in db"
                 user.socialMediaPersonae.push socialMediaUser._id
+                console.log "added link to socialMediaUser"
                 user.save (err, user)->
                     next err if err
                     next null, false unless user?
+                    console.log "Save successful"
         else
+            console.log "No user logged in, but facebook authorized"
             User.findOne
-                socialMediaPersonae: "$all": [smUser._id]
+                socialMediaPersonae: "$all": [socialMediaUser._id]
             , (err, user)->
                 next err if err
                 if user?
+                    console.log "Found user #{user.displayName} associated with socialMediaUser"
                     req.logIn user, (err)->
                         next err if err
                         res.json req.user
                 else
+                    console.log "No local user found for this socialMediaUser"
                     User.create
-                        displayName: smUser.displayName
-                        email: "#{smUser.providerUserId}@#{smUser.providerName}.com"
-                        userName: smUser.providerUserId
-                        firstName: smUser.displayName.split(" ")[0]
-                        lastName: smUser.displayName.split(" ")[-1..][0]
+                        displayName: socialMediaUser.displayName
+                        email: "#{socialMediaUser.providerUserId}@#{socialMediaUser.providerName}.com"
+                        userName: socialMediaUser.providerUserId
+                        firstName: socialMediaUser.displayName.split(" ")[0]
+                        lastName: socialMediaUser.displayName.split(" ")[-1..][0]
                         password: passwordGen 12
-                        socialMediaPersonae: [smUser._id]
+                        socialMediaPersonae: [socialMediaUser._id]
                     , (err, user)->
                         next err if err
+                        console.log "New user created"
                         req.logIn user, (err)->
                             next err if err
                             res.json req.user
