@@ -13,7 +13,7 @@ block body
                     li
                         button.btn.btn-primary.ng-cloak(type="button", ng-click="signInOutButton()", ng-hide="!signInOutText()", ng-bind="signInOutText()")
                     li
-                        button.btn.btn-default.fb-login-button(style="margin-left:5px", ng-show="!user")
+                        a.fb-login-button(style="margin-left:5px", ng-show="!user", href='')
                 p.navbar-text.ng-cloak(ng-hide="!user", ng-bind="'Welcome, ' + user.displayName")
     .container-fluid
         div(ng-controller='AppCtrl')
