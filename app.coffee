@@ -105,26 +105,7 @@ passport.use new FBStrategy
 getLocalUserFromSMUser = (done)->
     (err, smUser)->
         done err if err
-        if smUser
-            User.findOne
-                socialMediaPersonae: "$all": [smUser._id]
-            , OAuthSetUser done, smUser
 
-OAuthSetUser = (done, smUser)->
-    (err, user)->
-        done err if err
-        if user
-            done null, user, "Eureka!"
-        else
-            User.create
-                displayName: smUser.displayName
-                email: "#{smUser.providerUserId}@#{smUser.providerName}.com"
-                userName: smUser.providerUserId
-                firstName: smUser.displayName.split(" ")[0]
-                lastName: smUser.displayName.split(" ")[-1..][0]
-                password: passwordGen 12
-                socialMediaPersonae: [smUser._id]
-            , done null, user, "New user created from #{smUser.providerName}"
 
 # Routes
 #     Normal
@@ -166,16 +147,50 @@ app.get "/auth/facebook",
     passport.authenticate 'facebook'
 
 app.get "/auth/facebook/callback", (req, res, next)->
-    passport.authenticate('facebook', (err, user, info)->
+    passport.authenticate('facebook', (err, socialMediaUser, info)->
         if err
             console.dir err
             return next err
 
-        unless user
+        unless socialMediaUser
             req.session.messages = [info.message] if info?
             return res.json {}
 
-        req.logIn user, (err)->
+        if req.user?
+            User.findOne
+                _id: req.user._id
+            , (err, user)->
+                next err if err
+                next null, false unless user?
+                user.socialMediaPersonae.push socialMediaUser._id
+                user.save (err, user)->
+                    next err if err
+                    next null, false unless user?
+        else
+            User.findOne
+                socialMediaPersonae: "$all": [smUser._id]
+            , (err, user)->
+                next err if err
+                if user?
+                    req.logIn user, (err)->
+                        next err if err
+                        res.json req.user
+                else
+                    User.create
+                        displayName: smUser.displayName
+                        email: "#{smUser.providerUserId}@#{smUser.providerName}.com"
+                        userName: smUser.providerUserId
+                        firstName: smUser.displayName.split(" ")[0]
+                        lastName: smUser.displayName.split(" ")[-1..][0]
+                        password: passwordGen 12
+                        socialMediaPersonae: [smUser._id]
+                    , (err, user)->
+                        next err if err
+                        req.logIn user, (err)->
+                            next err if err
+                            res.json req.user
+
+        req.logIn socialMediaUser, (err)->
             if err
                 console.dir err
                 return next err
