@@ -146,8 +146,8 @@ app.post "/login", (req, res, next)->
             res.json req.user
     )(req, res, next)
 
-app.get "/auth/facebook",
-    passport.authenticate 'facebook'
+app.get "/auth/facebook", passport.authenticate('facebook'), (req, res, next)->
+    console.log "Not sure why you're reading this."
 
 app.get "/auth/facebook/callback", (req, res, next)->
     console.log "Request received for /auth/facebook/callback"
