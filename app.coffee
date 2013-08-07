@@ -161,33 +161,33 @@ app.get "/auth/facebook/callback", (req, res, next)->
         unless socialMediaUser
             console.log 'Facebook not authorized'
             req.session.messages = [info.message] if info?
-            return res.json {}
+            return res.redirect "/"
 
         if req.user?
             console.log "User #{req.user.displayName} already logged in"
             User.findOne
                 _id: req.user._id
             , (err, user)->
-                next err if err
+                return next err if err
                 next null, false unless user?
                 console.log "User found in db"
                 user.socialMediaPersonae.push socialMediaUser._id
                 console.log "added link to socialMediaUser"
                 user.save (err, user)->
-                    next err if err
-                    next null, false unless user?
+                    return next err if err
+                    return next null, false unless user?
                     console.log "Save successful"
         else
             console.log "No user logged in, but facebook authorized"
             User.findOne
                 socialMediaPersonae: "$all": [socialMediaUser._id]
             , (err, user)->
-                next err if err
+                return next err if err
                 if user?
                     console.log "Found user #{user.displayName} associated with socialMediaUser"
                     req.logIn user, (err)->
-                        next err if err
-                        res.redirect "/"
+                        return next err if err
+                        return res.redirect "/"
                 else
                     console.log "No local user found for this socialMediaUser"
                     User.create
@@ -202,14 +202,9 @@ app.get "/auth/facebook/callback", (req, res, next)->
                         next err if err
                         console.log "New user created"
                         req.logIn user, (err)->
-                            next err if err
-                            res.redirect "/"
+                            return next err if err
+                            return res.redirect "/"
 
-        req.logIn socialMediaUser, (err)->
-            if err
-                console.dir err
-                return next err
-            res.redirect "/"
     )(req, res, next)
 
 logout = (req, res)->
@@ -233,6 +228,7 @@ expireDate.setTime expireDate.getTime() + 365*24*60*60*1000
 #    then send a script link as the content of the response.
 app.get "/fbChannel", (req, res)->
     oneYear = 60*60*24*365
+    console.log "Have we already set headers?"
     res.setHeader "Pragma", "public"
     res.setHeader "Cache-Control", "max-age=#{oneYear}"
     res.setHeader "Expires",  dateformat(expireDate, "dddd, d mmmm yyyy H:MM:ss", true) + " GMT"
