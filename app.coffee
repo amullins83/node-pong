@@ -153,7 +153,7 @@ app.get "/auth/facebook/callback", (req, res, next)->
     console.log "Request received for /auth/facebook/callback"
     passport.authenticate('facebook', (err, socialMediaUser, info)->
         console.log "Verify callback"
-        console.log "Info says: #{info.message}"
+        console.log "Info says: #{info.message}" if info?
         if err
             console.dir err
             return next err
@@ -187,7 +187,7 @@ app.get "/auth/facebook/callback", (req, res, next)->
                     console.log "Found user #{user.displayName} associated with socialMediaUser"
                     req.logIn user, (err)->
                         next err if err
-                        res.json req.user
+                        res.redirect "/"
                 else
                     console.log "No local user found for this socialMediaUser"
                     User.create
@@ -203,13 +203,13 @@ app.get "/auth/facebook/callback", (req, res, next)->
                         console.log "New user created"
                         req.logIn user, (err)->
                             next err if err
-                            res.json req.user
+                            res.redirect "/"
 
         req.logIn socialMediaUser, (err)->
             if err
                 console.dir err
                 return next err
-            res.json req.user
+            res.redirect "/"
     )(req, res, next)
 
 logout = (req, res)->
