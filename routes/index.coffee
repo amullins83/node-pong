@@ -1,7 +1,7 @@
 # GET home page.
 
 exports.index = (req, res)->
-  res.render 'index', user: req.user
+  res.render 'index', user: req.user, FBLoginImage: "//s3.amazonaws.com/node-pong/assets/img/login-with-facebook.png"
 
 exports.partial = (req, res)->
   name = req.params.name

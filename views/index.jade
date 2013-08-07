@@ -13,7 +13,8 @@ block body
                     li
                         button.btn.btn-primary.ng-cloak(type="button", ng-click="signInOutButton()", ng-hide="!signInOutText()", ng-bind="signInOutText()")
                     li
-                        a.fb-login-button(style="margin-left:5px", ng-show="!user", href='')
+                        a(href="/auth/facebook")
+                            img(src=#{FBLoginImage}, width="154", height="22")
                 p.navbar-text.ng-cloak(ng-hide="!user", ng-bind="'Welcome, ' + user.displayName")
     .container-fluid
         div(ng-controller='AppCtrl')
