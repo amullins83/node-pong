@@ -20,7 +20,7 @@ class DialogCtrl
         @$scope.users = User.query()
 
         @$scope.$watch "users.length", =>
-            @$scope.user = @$scope.users[0]
+            @$scope.user = if @$scope.users.length then @$scope.users[0] else null
             if @$scope.user?
                 unless @$scope.user.displayName?
                     @$scope.user.displayName = @$scope.user.userName
@@ -82,7 +82,7 @@ class GameCtrl
     constructor: (@$scope, @$http, @$timeout, Game, @User, Pad, Ball, HitDetector)->
         @$scope.users = @User.query()
         @$scope.$watch "users.length", =>
-            @$scope.user = @$scope.users[0]
+            @$scope.user = if @$scope.users.length then @$scope.users[0] else null
             if @$scope.user?
                 unless @$scope.user.displayName?
                     @$scope.user.displayName = @$scope.user.userName

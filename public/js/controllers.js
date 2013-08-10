@@ -34,7 +34,7 @@ DialogCtrl = (function() {
     };
     this.$scope.users = User.query();
     this.$scope.$watch("users.length", function() {
-      _this.$scope.user = _this.$scope.users[0];
+      _this.$scope.user = _this.$scope.users.length ? _this.$scope.users[0] : null;
       if (_this.$scope.user != null) {
         if (_this.$scope.user.displayName == null) {
           return _this.$scope.user.displayName = _this.$scope.user.userName;
@@ -141,7 +141,7 @@ GameCtrl = (function() {
     this.updateLater = __bind(this.updateLater, this);
     this.$scope.users = this.User.query();
     this.$scope.$watch("users.length", function() {
-      _this.$scope.user = _this.$scope.users[0];
+      _this.$scope.user = _this.$scope.users.length ? _this.$scope.users[0] : null;
       if (_this.$scope.user != null) {
         if (_this.$scope.user.displayName == null) {
           return _this.$scope.user.displayName = _this.$scope.user.userName;
